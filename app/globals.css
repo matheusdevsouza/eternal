@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/**
+ * ETERNAL GIFT - MIDNIGHT ROSE & CHAMPAGNE PALETTE
+ * 
+ * DARK MODE (padrão):
+ * BG Deep: #0F0507 (Quase preto com subtom mogno)
+ * BG Card: #1A0B0E
+ * Primary: #FF3366 (Vibrant Rose)
+ * Accent: #FDA4AF (Soft Pink)
+ * Text: #FFF1F2 (Creamy White)
+ * Border: #2D1318
+ * 
+ * LIGHT MODE:
+ * BG Deep: #FFF8F9 (Off-white com toque rosado)
+ * BG Card: #FFFFFF
+ * Primary: #E91E63 (Rose vibrante)
+ * Accent: #F48FB1 (Soft Pink)
+ * Text: #1A0B0E (Quase preto)
+ * Border: #FADADD (Border suave rosado)
+ */
+
+:root[data-theme="dark"],
+:root:not([data-theme]) {
+  --bg-deep: #0F0507;
+  --bg-card: #1A0B0E;
+  --bg-card-hover: #2D1318;
+  --bg-section: #1A0B0E;
+  --bg-gradient-start: #1A0B0E;
+  --bg-gradient-end: #0F0507;
+  --primary: #FF3366;
+  --primary-hover: #FF4D7D;
+  --primary-light: rgba(255, 51, 102, 0.15);
+  --primary-dark: #E91E63;
+  --accent: #FDA4AF;
+  --text: #FFF1F2;
+  --text-secondary: rgba(255, 241, 242, 0.6);
+  --text-muted: rgba(255, 241, 242, 0.5);
+  --text-light: rgba(255, 241, 242, 0.4);
+  --border: #2D1318;
+  --border-hover: rgba(255, 51, 102, 0.3);
+  --navbar-bg: rgba(15, 5, 7, 0.95);
+  --logo-filter: none;
+  --badge-bg: #1A0B0E;
+  --badge-text: #FDA4AF;
+  --badge-border: #2D1318;
+  --card-number: rgba(255, 51, 102, 0.15);
+  --icon-bg: rgba(255, 51, 102, 0.1);
+  --shadow-color: rgba(255, 51, 102, 0.15);
+  --hero-gradient: linear-gradient(to bottom, rgba(255, 51, 102, 0.15), transparent);
+  --cta-gradient: linear-gradient(to bottom right, rgba(255, 51, 102, 0.1), transparent, rgba(253, 164, 175, 0.1));
+  --demo-card-bg: linear-gradient(to bottom right, rgba(255, 51, 102, 0.08), rgba(253, 164, 175, 0.05));
+  --demo-card-border: rgba(255, 51, 102, 0.2);
+  --demo-card-locked-bg: rgba(45, 19, 24, 0.6);
+  --demo-card-locked-border: rgba(45, 19, 24, 0.9);
+  --demo-card-locked-text: rgba(255, 241, 242, 0.5);
+  --demo-card-locked-icon: rgba(255, 241, 242, 0.3);
+  --demo-badge-bg: #FF3366;
+  --demo-icon-bg: rgba(255, 51, 102, 0.15);
+}
+
+:root[data-theme="light"] {
+  --bg-deep: #FFF8F9;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FFF0F2;
+  --bg-section: #FFFFFF;
+  --bg-gradient-start: #FFFFFF;
+  --bg-gradient-end: #FFF8F9;
+  --primary: #E91E63;
+  --primary-hover: #C2185B;
+  --primary-light: rgba(233, 30, 99, 0.1);
+  --primary-dark: #AD1457;
+  --accent: #F48FB1;
+  --text: #1A0B0E;
+  --text-secondary: rgba(26, 11, 14, 0.7);
+  --text-muted: rgba(26, 11, 14, 0.6);
+  --text-light: rgba(26, 11, 14, 0.5);
+  --border: #FADADD;
+  --border-hover: rgba(233, 30, 99, 0.3);
+  --navbar-bg: rgba(255, 248, 249, 0.95);
+  --logo-filter: invert(1) brightness(0.9);
+  --badge-bg: #FFF0F2;
+  --badge-text: #E91E63;
+  --badge-border: #FADADD;
+  --card-number: rgba(233, 30, 99, 0.1);
+  --icon-bg: rgba(233, 30, 99, 0.1);
+  --shadow-color: rgba(233, 30, 99, 0.15);
+  --hero-gradient: linear-gradient(to bottom, rgba(233, 30, 99, 0.1), transparent);
+  --cta-gradient: linear-gradient(to bottom right, rgba(233, 30, 99, 0.08), transparent, rgba(244, 143, 177, 0.08));
+  --demo-card-bg: linear-gradient(to bottom right, rgba(233, 30, 99, 0.08), rgba(244, 143, 177, 0.05));
+  --demo-card-border: rgba(233, 30, 99, 0.25);
+  --demo-card-locked-bg: rgba(250, 218, 221, 0.7);
+  --demo-card-locked-border: rgba(233, 30, 99, 0.3);
+  --demo-card-locked-text: rgba(26, 11, 14, 0.6);
+  --demo-card-locked-icon: rgba(26, 11, 14, 0.4);
+  --demo-badge-bg: #E91E63;
+  --demo-icon-bg: rgba(233, 30, 99, 0.12);
+}
+
+@theme inline {
+  --color-bg-deep: var(--bg-deep);
+  --color-bg-card: var(--bg-card);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-text: var(--text);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Smooth scroll é gerenciado pelo Lenis */
+
+body {
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+/* Animações para o sistema de demonstração */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-expandIn {
+  animation: expandIn 0.3s ease-out forwards;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out forwards;
+}
