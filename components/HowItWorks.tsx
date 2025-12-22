@@ -6,7 +6,7 @@ import { Icons } from './Icons';
 
 interface StepCardProps {
   number: string;
-  icon: React.ReactElement;
+  icon: React.ReactElement<{ className?: string }>;
   title: string;
   desc: string;
   index: number;

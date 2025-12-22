@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
 const SALT_ROUNDS = 12;
 
 /**
@@ -72,17 +72,19 @@ export function validatePassword(password: string): { valid: boolean; errors: st
  * Gera token JWT
  */
 
-export function generateJWT(payload: any, expiresIn: string = '7d'): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn });
+export function generateJWT(payload: any, expiresIn: string | number = '7d'): string {
+  return jwt.sign(payload, JWT_SECRET as string, { 
+    expiresIn: expiresIn as any 
+  });
 }
 
-/**
+/**ss
  * Verifica e decodifica token JWT
  */
 
 export function verifyJWT(token: string): any {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET as string);
   } catch (error) {
     return null;
   }
@@ -192,4 +194,3 @@ export function getClientIP(request: Request): string {
 export function getUserAgent(request: Request): string {
   return request.headers.get('user-agent') || 'unknown';
 }
-

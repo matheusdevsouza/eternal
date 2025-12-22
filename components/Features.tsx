@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, easeOut } from 'framer-motion';
 import { Icons } from './Icons';
 
 interface Feature {
@@ -61,7 +61,7 @@ export default function Features() {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
+        ease: easeOut
       }
     }
   };
@@ -73,7 +73,7 @@ export default function Features() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: easeOut }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-black mb-4">

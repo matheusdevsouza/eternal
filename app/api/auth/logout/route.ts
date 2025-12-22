@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 import { verifyJWT } from '@/lib/auth';
 
 /**
@@ -15,6 +18,7 @@ import { verifyJWT } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    const prisma = getPrisma();
 
     /** * Recuperação do Cookie: Acedemos ao cookie 'session' definido como httpOnly
      * durante o processo de login.

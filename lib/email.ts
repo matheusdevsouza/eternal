@@ -1,29 +1,31 @@
 import nodemailer from 'nodemailer';
 
 const SMTP_CONFIG = {
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT as string),
   secure: process.env.SMTP_SECURE === 'true',
   auth: {
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || '',
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 };
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@eternalgift.com';
-const FROM_NAME = process.env.FROM_NAME || 'Eternal Gift';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const FROM_EMAIL = process.env.FROM_EMAIL;
+const FROM_NAME = process.env.FROM_NAME;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
 /**
  * Cria transporter do nodemailer
  */
+
 function createTransporter() {
-  return nodemailer.createTransporter(SMTP_CONFIG);
+  return nodemailer.createTransport(SMTP_CONFIG);
 }
 
 /**
  * Template base de email
  */
+
 function getEmailTemplate(content: string): string {
   return `
     <!DOCTYPE html>
@@ -287,4 +289,5 @@ export async function sendSecurityAlertEmail(
     html: getEmailTemplate(content),
   });
 }
+
 
