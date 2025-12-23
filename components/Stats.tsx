@@ -69,7 +69,7 @@ export default function Stats() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               className="flex flex-col items-center"
             >
               <div className="text-[var(--primary)] mb-6 flex items-center justify-center">

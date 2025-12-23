@@ -49,7 +49,7 @@ export default function Testimonials() {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
+        duration: 0.6,
         ease: "easeOut"
       }
     }
@@ -85,7 +85,7 @@ export default function Testimonials() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="p-8 rounded-3xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--border-hover)] transition-all group"
+              className="p-8 rounded-3xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--border-hover)] transition-all group flex flex-col"
             >
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
@@ -94,10 +94,10 @@ export default function Testimonials() {
                   </svg>
                 ))}
               </div>
-              <p className="text-[var(--text-secondary)] leading-relaxed mb-6 italic">
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-6 italic flex-1">
                 "{testimonial.text}"
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 mt-auto">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] flex items-center justify-center text-white font-bold">
                   {testimonial.name.split(' ').map(n => n[0]).join('')}
                 </div>

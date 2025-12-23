@@ -12,23 +12,30 @@ import { PhotosDemo, MusicDemo, LetterDemo, ThemeDemo, QRCodeDemo, ShareDemo } f
  * e a área de visualização (preview). Inclui lógica para manter as alturas
  * dos containers sincronizadas, garantindo uma experiência visual fluida.
  */
+
 export default function DemoSection() {
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+
     /**
      * Calcula e sincroniza a altura do container de preview com a altura
      * real da grade de cards. Utiliza requestAnimationFrame para garantir 
      * que o cálculo ocorra após as transformações de layout do navegador.
      */
+
     const syncHeights = () => {
       if (cardsContainerRef.current && previewContainerRef.current) {
         requestAnimationFrame(() => {
           if (cardsContainerRef.current && previewContainerRef.current) {
-            const cardsHeight = cardsContainerRef.current.offsetHeight;
-            const finalHeight = Math.max(cardsHeight, 600);
-            previewContainerRef.current.style.height = `${finalHeight}px`;
+            const isMobile = window.innerWidth < 1024;
+            
+            if (!isMobile) {
+              const cardsHeight = cardsContainerRef.current.offsetHeight;
+              const finalHeight = Math.max(cardsHeight, 600);
+              previewContainerRef.current.style.height = `${finalHeight}px`;
+            }
           }
         });
       }
@@ -86,10 +93,10 @@ export default function DemoSection() {
         </motion.div>
 
         <DemoProvider>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 items-start">
             <div 
               ref={cardsContainerRef}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-min"
+              className="w-full order-2 lg:order-1 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-min"
             >
               <PhotosDemo />
               <MusicDemo />
@@ -101,8 +108,7 @@ export default function DemoSection() {
 
             <div 
               ref={previewContainerRef}
-              className="lg:sticky lg:top-24 lg:self-start"
-              style={{ minHeight: '600px' }}
+              className="w-full order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start"
             >
               <DemoPreview />
             </div>

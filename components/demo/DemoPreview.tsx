@@ -64,25 +64,24 @@ export function DemoPreview() {
     <div 
       ref={previewRef}
       data-preview-container
-      className="hidden md:block w-full h-full rounded-2xl border-2 border-dashed border-[var(--border)] relative"
+      className="w-full rounded-2xl border-2 border-dashed border-[var(--border)] relative
+                 min-h-[500px] 
+                 lg:min-h-[600px] lg:h-full"
       style={{ 
-        pointerEvents: previewCard ? 'auto' : 'none',
-        minHeight: '600px'
+        pointerEvents: previewCard ? 'auto' : 'none'
       }}
     >
-      {/* Área de placeholder sempre visível como background */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <p className={`text-[var(--text-secondary)] text-sm text-center transition-opacity duration-300 ${
-          previewCard ? 'opacity-0' : 'opacity-100'
-        }`}>
-          Clique no botão "Iniciar Demo" para começar a demonstração.
-        </p>
-      </div>
+      {!previewCard && (
+        <div className="flex items-center justify-center p-6 min-h-[500px]">
+          <p className="text-[var(--text-secondary)] text-sm md:text-base text-center max-w-md">
+            Clique no botão <span className="font-bold text-[var(--primary)]">"Iniciar Demo"</span> em qualquer card para ver a demonstração interativa.
+          </p>
+        </div>
+      )}
       
-      {/* Card que aparece e preenche todo o espaço por cima do background */}
       {previewCard && (
         <div 
-          className={`absolute -inset-2 transition-all duration-400 ease-out ${
+          className={`w-full transition-all duration-400 ease-out rounded-2xl ${
             isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
           }`}
           style={{ pointerEvents: isVisible ? 'auto' : 'none' }}

@@ -22,7 +22,6 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -31,7 +30,6 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
           />
 
-          {/* Modal */}
           <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -40,7 +38,6 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
               transition={{ duration: 0.2 }}
               className={`bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl shadow-2xl w-full ${widthClasses[maxWidth]} max-h-[90vh] overflow-auto`}
             >
-              {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-[var(--border)]">
                 <h3 className="text-xl font-bold text-[var(--text)]">{title}</h3>
                 <button
@@ -63,7 +60,6 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
                 </button>
               </div>
 
-              {/* Content */}
               <div className="p-6">{children}</div>
             </motion.div>
           </div>
@@ -72,6 +68,10 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
     </AnimatePresence>
   );
 }
+
+
+
+
 
 
 

@@ -70,6 +70,26 @@ export default function FAQ() {
     {
       question: 'Os dados são seguros?',
       answer: 'Absolutamente! Utilizamos criptografia de ponta e servidores seguros. Suas memórias são privadas e protegidas.'
+    },
+    {
+      question: 'Quantas páginas posso criar por mês?',
+      answer: 'Em todos os planos você pode criar quantas páginas quiser durante o período da sua assinatura mensal! Não há limites de páginas.'
+    },
+    {
+      question: 'Posso cancelar minha assinatura a qualquer momento?',
+      answer: 'Sim! Você pode cancelar sua assinatura a qualquer momento. As páginas criadas durante o período ativo permanecerão disponíveis mesmo após o cancelamento.'
+    },
+    {
+      question: 'É possível compartilhar com senha?',
+      answer: 'Sim! Você pode proteger suas páginas com senha para garantir que apenas pessoas autorizadas tenham acesso ao seu presente especial.'
+    },
+    {
+      question: 'Qual formato de imagens é aceito?',
+      answer: 'Aceitamos JPG, PNG, GIF e WEBP. Recomendamos imagens com no mínimo 1920x1080 pixels para melhor qualidade na visualização.'
+    },
+    {
+      question: 'Posso usar músicas personalizadas?',
+      answer: 'Sim! Nos planos Premium e Eternal você pode fazer upload das suas próprias músicas em formato MP3 para tornar o presente ainda mais personalizado.'
     }
   ];
 

@@ -60,10 +60,10 @@ export default function Navbar() {
   ];
 
   return (
+    <>
     <nav className="fixed top-0 w-full z-50 bg-[var(--navbar-bg)] backdrop-blur-xl border-b border-[var(--border)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
           <Link href="/" className="flex items-center transition-all duration-300 hover:scale-110">
             <Image 
               src="/logo.png" 
@@ -76,7 +76,6 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <div
@@ -139,7 +138,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button & Mobile Menu */}
           <div className="flex items-center gap-3">
             <Link
               href="/login"
@@ -154,12 +152,10 @@ export default function Navbar() {
               Ver Demo
             </button>
 
-            {/* Settings */}
             <div className="hidden sm:block">
               <Settings />
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors"
@@ -180,89 +176,99 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+      </div>
+    </nav>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-[var(--border)] py-4"
-            >
-              <div className="space-y-1">
-                {navItems.map((item) => (
-                  <div key={item.label}>
-                    {item.submenu ? (
-                      <div>
-                        <button
-                          onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
-                          className="w-full px-4 py-3 text-left text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors flex items-center justify-between"
+    <AnimatePresence>
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, x: '100%' }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: '100%' }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className="lg:hidden fixed inset-0 top-20 bg-[var(--bg-deep)] z-[100] overflow-y-auto"
+        >
+          <div className="min-h-full flex flex-col p-6">
+            <div className="space-y-2 flex-1">
+              {navItems.map((item) => (
+                <div key={item.label}>
+                  {item.submenu ? (
+                    <div>
+                      <button
+                        onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
+                        className="w-full px-4 py-4 text-left text-base font-bold text-[var(--text)] hover:text-[var(--primary)] transition-colors flex items-center justify-between rounded-xl hover:bg-[var(--bg-card)]"
+                      >
+                        {item.label}
+                        <svg
+                          className={`w-5 h-5 transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          {item.label}
-                          <svg
-                            className={`w-4 h-4 transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      <AnimatePresence>
                         {openDropdown === item.label && (
-                          <div className="pl-4 space-y-1">
+                          <motion.div 
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="pl-4 space-y-1 overflow-hidden"
+                          >
                             {item.submenu.map((subItem) => (
                               <Link
                                 key={subItem.label}
                                 href={subItem.href}
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="block px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors"
+                                className="block px-4 py-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors rounded-lg hover:bg-[var(--bg-card)]"
                               >
                                 {subItem.label}
                               </Link>
                             ))}
-                          </div>
+                          </motion.div>
                         )}
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          item.onClick?.();
-                          setMobileMenuOpen(false);
-                        }}
-                        className="w-full px-4 py-3 text-left text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors"
-                      >
-                        {item.label}
-                      </button>
-                    )}
-                  </div>
-                ))}
-                <div className="pt-4 px-4 space-y-2 border-t border-[var(--border)] mt-4">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full px-4 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-full text-sm font-bold text-center transition-colors"
-                  >
-                    Entrar
-                  </Link>
-                  <button
-                    onClick={() => {
-                      scrollToSection('precos');
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full px-4 py-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-full text-sm font-bold text-center transition-colors"
-                  >
-                    Ver Demo
-                  </button>
-                  <div className="flex justify-center pt-2">
-                    <Settings />
-                  </div>
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        item.onClick?.();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-4 text-left text-base font-bold text-[var(--text)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--bg-card)]"
+                    >
+                      {item.label}
+                    </button>
+                  )}
                 </div>
+              ))}
+            </div>
+            <div className="pt-6 space-y-3 border-t border-[var(--border)] mt-6">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full px-6 py-4 bg-[var(--primary)] hover:opacity-90 text-white rounded-2xl text-base font-bold text-center transition-all shadow-lg"
+              >
+                Entrar
+              </Link>
+              <button
+                onClick={() => {
+                  scrollToSection('precos');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full px-6 py-4 bg-[var(--bg-card)] border-2 border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-2xl text-base font-bold text-center transition-all"
+              >
+                Ver Demo
+              </button>
+              <div className="flex justify-center pt-4">
+                <Settings />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </nav>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

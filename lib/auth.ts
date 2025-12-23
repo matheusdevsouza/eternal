@@ -78,7 +78,7 @@ export function generateJWT(payload: any, expiresIn: string | number = '7d'): st
   });
 }
 
-/**ss
+/**
  * Verifica e decodifica token JWT
  */
 
@@ -194,5 +194,9 @@ export function getClientIP(request: Request): string {
 export function getUserAgent(request: Request): string {
   return request.headers.get('user-agent') || 'unknown';
 }
+
+
+
+
 
 

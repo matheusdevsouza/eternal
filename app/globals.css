@@ -108,8 +108,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Smooth scroll é gerenciado pelo Lenis */
-
 body {
   background: var(--bg-deep);
   color: var(--text);
@@ -122,7 +120,6 @@ body {
   color: white;
 }
 
-/* Animações para o sistema de demonstração */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -166,4 +163,22 @@ body {
 
 .animate-slideIn {
   animation: slideIn 0.3s ease-out forwards;
+}
+
+@media (max-width: 1023px) {
+  .demo-card-preview {
+    position: relative !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+  
+  [data-preview-container] {
+    height: auto !important;
+    min-height: 500px;
+  }
+}
+
+[data-preview-container] {
+  display: flex;
+  flex-direction: column;
 }

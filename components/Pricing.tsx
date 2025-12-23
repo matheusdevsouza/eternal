@@ -16,7 +16,7 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, delay: index * 0.15, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
       className={`p-8 rounded-[40px] border ${
         tier.popular 
           ? 'border-[var(--primary)] bg-[var(--bg-card)] scale-105 shadow-[0_0_60px_var(--shadow-color)]' 
@@ -24,7 +24,7 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
       } flex flex-col relative`}
     >
       {tier.popular && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-[var(--primary)] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[var(--primary)] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
           Mais Popular
         </div>
       )}
@@ -33,7 +33,7 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
         <h3 className="text-lg font-bold text-[var(--text-secondary)] mb-2">{tier.name}</h3>
         <div className="flex items-baseline gap-1">
           <span className="text-4xl font-black text-[var(--text)]">R${tier.price}</span>
-          <span className="text-[var(--text-light)] text-sm">/página</span>
+          <span className="text-[var(--text-light)] text-sm">/mês</span>
         </div>
       </div>
       
@@ -67,8 +67,8 @@ export default function Pricing() {
       name: 'Start',
       price: '29',
       features: [
-        '1 Página exclusiva',
-        '5 Fotos HD',
+        'Páginas ilimitadas',
+        'Até 5 Fotos HD por página',
         'Texto personalizado',
         'Link público',
         'QR Code padrão'
@@ -79,8 +79,8 @@ export default function Pricing() {
       price: '59',
       popular: true,
       features: [
-        '1 Página exclusiva',
-        '15 Fotos HD',
+        'Páginas ilimitadas',
+        'Até 15 Fotos HD por página',
         'Música de fundo',
         'Contador de tempo',
         'Animações premium',
@@ -91,8 +91,8 @@ export default function Pricing() {
       name: 'Eternal',
       price: '99',
       features: [
-        'Até 3 Páginas',
-        '30 Fotos HD',
+        'Páginas ilimitadas',
+        'Até 30 Fotos HD por página',
         'Música ilimitada',
         'Domínio personalizado',
         'Edição Vitalícia',

@@ -18,7 +18,7 @@ function StepCard({ number, icon, title, desc, index }: StepCardProps) {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, delay: index * 0.15, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
       className="p-10 rounded-[32px] bg-[var(--bg-card)] border border-[var(--border)] relative group hover:border-[var(--border-hover)] transition-all"
     >
       <div className="text-5xl font-black text-[var(--card-number)] absolute top-6 right-8 group-hover:text-[var(--primary-light)] transition-colors">

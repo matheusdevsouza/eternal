@@ -177,8 +177,10 @@ const ActiveDemoCard = ({
 }) => (
   <div 
     ref={cardRef}
-    className={`rounded-2xl border transition-all duration-300 relative overflow-hidden flex flex-col hover:shadow-xl ${
-      isPreview ? 'p-10 w-full h-full min-h-[600px] absolute inset-0' : 'p-6'
+    className={`rounded-2xl border transition-all duration-300 relative flex flex-col hover:shadow-xl ${
+      isPreview 
+        ? 'p-6 md:p-10 w-full' 
+        : 'p-6 overflow-hidden'
     } ${isPreview ? 'demo-card-preview' : ''}`}
     style={{
       background: 'var(--demo-card-bg)',
@@ -189,13 +191,14 @@ const ActiveDemoCard = ({
     {isPreview && onClose && (
       <button
         onClick={onClose}
-        className={`absolute top-4 right-4 z-30 rounded-full p-2 shadow-lg transition-all hover:scale-110 ${
+        className={`${isPreview ? 'absolute' : 'hidden'} top-3 right-3 md:top-4 md:right-4 z-30 rounded-full p-2 shadow-lg transition-all hover:scale-110 active:scale-95 ${
           cardReady ? 'animate-expandIn' : 'opacity-0 pointer-events-none'
         }`}
         style={{ 
           background: 'var(--bg-card)',
           border: '1px solid var(--border)'
         }}
+        aria-label="Fechar preview"
       >
         <div style={{ color: 'var(--text)' }}>
           <XIcon className="w-5 h-5" />
@@ -203,7 +206,7 @@ const ActiveDemoCard = ({
       </button>
     )}
     <div 
-      className={`absolute ${isPreview ? 'bottom-4' : 'top-4'} right-4 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold z-10 ${
+      className={`${isPreview ? 'absolute bottom-3 md:bottom-4' : 'absolute top-4'} right-4 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold z-10 ${
         isPreview && cardReady ? 'animate-expandIn' : isPreview ? 'opacity-0' : ''
       }`}
       style={{ background: 'var(--demo-badge-bg)', color: 'white' }}
@@ -211,17 +214,17 @@ const ActiveDemoCard = ({
       {number}
     </div>
     <div 
-      className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${
+      className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mb-3 md:mb-4 flex-shrink-0 ${
         isPreview && cardReady ? 'animate-expandIn' : isPreview ? 'opacity-0' : ''
       }`}
       style={{ background: 'var(--demo-badge-bg)', color: 'white' }}
     >
-      <div className="w-6 h-6 flex items-center justify-center text-white">
-        {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<any>, { className: "w-6 h-6" }) : icon}
+      <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center text-white">
+        {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<any>, { className: "w-5 h-5 md:w-6 md:h-6" }) : icon}
       </div>
     </div>
     <h3 
-      className={`font-bold text-xl mb-4 ${
+      className={`font-bold text-lg md:text-xl mb-3 md:mb-4 ${
         isPreview && cardReady ? 'animate-expandIn' : isPreview ? 'opacity-0' : ''
       }`}
       style={{ color: 'var(--text)' }}
@@ -238,7 +241,7 @@ const ActiveDemoCard = ({
     </div>
     
     <p 
-      className={`text-xs mt-4 pt-4 border-t ${
+      className={`text-xs mt-3 md:mt-4 pt-3 md:pt-4 border-t flex-shrink-0 ${
         isPreview && cardReady ? 'animate-expandIn' : isPreview ? 'opacity-0' : ''
       }`}
       style={{ 
@@ -415,11 +418,11 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
       cardReady={cardReady}
       onClose={onClose}
     >
-      <div className="space-y-3">
+      <div className="space-y-2 md:space-y-3">
         {step === 'idle' && (
           <button
             onClick={handleStart}
-            className="w-full text-sm py-3 px-4 rounded-lg transition-colors font-semibold text-white"
+            className="w-full text-sm md:text-base py-3 md:py-3.5 px-4 rounded-lg transition-all font-semibold text-white hover:scale-105 active:scale-95"
             style={{ background: 'var(--primary)', color: 'white' }}
             onMouseEnter={(e) => e.currentTarget.style.background = 'var(--primary-hover)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
@@ -432,24 +435,24 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
         {(step === 'uploading' || step === 'complete') && (
           <>
             <div 
-              className="rounded-lg p-4 border flex-grow"
+              className="rounded-lg p-3 md:p-4 border flex-grow overflow-hidden"
               style={{ 
                 background: 'var(--bg-card)',
                 borderColor: 'var(--border)'
               }}
             >
-              <div className="space-y-2">
+              <div className="space-y-2 max-h-[280px] md:max-h-none overflow-y-auto">
                 {photos.map((photo, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-2 rounded animate-fadeIn"
+                    className="flex items-center gap-2 md:gap-3 p-2 rounded animate-fadeIn"
                     style={{ background: 'var(--demo-icon-bg)' }}
                   >
                     <div style={{ color: 'var(--primary)' }}>
-                    <Icons.Camera className="w-5 h-5" />
-                  </div>
-                    <span className="text-sm flex-1" style={{ color: 'var(--text)' }}>{photo}</span>
-                    <Icons.Check className="w-4 h-4 text-green-600" />
+                      <Icons.Camera className="w-4 h-4 md:w-5 md:h-5" />
+                    </div>
+                    <span className="text-xs md:text-sm flex-1 truncate" style={{ color: 'var(--text)' }}>{photo}</span>
+                    <Icons.Check className="w-4 h-4 text-green-600 flex-shrink-0" />
                   </div>
                 ))}
               </div>
@@ -463,17 +466,17 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
             
             {step === 'complete' && (
               <div 
-                className="rounded-lg p-4 border mt-3"
+                className="rounded-lg p-3 md:p-4 border mt-2 md:mt-3"
                 style={{ 
                   background: 'var(--primary-light)',
                   borderColor: 'var(--primary)'
                 }}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2 md:gap-3">
                   <div className="w-2 h-2 rounded-full mt-1.5 animate-pulse flex-shrink-0" style={{ background: 'var(--primary)' }}></div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>IA:</div>
-                    <div className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
+                    <div className="text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
                       <Typewriter 
                         text="Fotos adicionadas ao álbum! Que momentos especiais vocês compartilham! Sinta-se à vontade para remover, substituir ou adicionar mais fotos quando quiser. ✨"
                         speed={30}
@@ -1128,11 +1131,11 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
       cardReady={cardReady}
       onClose={onClose}
     >
-      <div className={`flex flex-col ${isPreview ? 'h-full justify-center items-center' : ''}`}>
+      <div className={`flex flex-col ${isPreview ? 'h-full justify-center items-center py-4' : ''}`}>
         {step === 'idle' && (
           <button
             onClick={handleStart}
-            className="w-full text-sm py-3 px-4 rounded-lg transition-colors font-semibold text-white"
+            className="w-full text-sm md:text-base py-3 px-4 rounded-lg transition-all font-semibold text-white hover:scale-105 active:scale-95"
             style={{ background: 'var(--primary)' }}
             onMouseEnter={(e) => e.currentTarget.style.background = 'var(--primary-hover)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
@@ -1145,7 +1148,7 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
         {step === 'generating' && (
           <div className={`flex flex-col items-center gap-3 animate-fadeIn ${isPreview ? 'justify-center h-full' : ''}`}>
             <div style={{ color: 'var(--primary)' }}>
-              <Loader2Icon className="w-12 h-12 animate-spin" />
+              <Loader2Icon className="w-10 h-10 md:w-12 md:h-12 animate-spin" />
             </div>
             <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
               Gerando QR Code...
@@ -1154,9 +1157,9 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
         )}
 
         {step === 'complete' && (
-          <div className={`flex flex-col items-center gap-4 animate-fadeIn w-full ${isPreview ? 'justify-center h-full' : ''}`}>
+          <div className={`flex flex-col items-center gap-3 md:gap-4 animate-fadeIn w-full ${isPreview ? 'justify-center h-full' : ''}`}>
             <div 
-              className="p-4 bg-white rounded-2xl shadow-lg"
+              className="p-3 md:p-4 bg-white rounded-2xl shadow-lg"
               style={{ 
                 border: '3px solid',
                 borderColor: 'var(--primary)'
@@ -1165,17 +1168,17 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
               <img 
                 src={qrCodeUrl}
                 alt="QR Code"
-                className="w-40 h-40"
+                className="w-32 h-32 md:w-40 md:h-40"
                 style={{ imageRendering: 'pixelated' }}
               />
             </div>
             <div className="flex items-center gap-2">
-              <Icons.Check className="w-5 h-5 text-green-600" />
-              <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+              <Icons.Check className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+              <span className="text-xs md:text-sm font-semibold" style={{ color: 'var(--text)' }}>
                 QR Code gerado com sucesso!
               </span>
             </div>
-            <div className="text-xs text-center max-w-[200px]" style={{ color: 'var(--text-secondary)' }}>
+            <div className="text-xs text-center max-w-[200px] px-2" style={{ color: 'var(--text-secondary)' }}>
               Escaneie para acessar seu presente eterno
             </div>
           </div>
@@ -1361,11 +1364,11 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       cardReady={cardReady}
       onClose={onClose}
     >
-      <div className="flex flex-col space-y-3">
+      <div className="flex flex-col space-y-2 md:space-y-3 overflow-y-auto">
         {step === 'idle' && (
           <button
             onClick={handleStart}
-            className="w-full text-sm py-3 px-4 rounded-lg transition-colors font-semibold text-white"
+            className="w-full text-sm md:text-base py-3 px-4 rounded-lg transition-all font-semibold text-white hover:scale-105 active:scale-95"
             style={{ background: 'var(--primary)' }}
             onMouseEnter={(e) => e.currentTarget.style.background = 'var(--primary-hover)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
@@ -1414,37 +1417,37 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
             {(step === 'calculating' || step === 'complete') && (
               <>
                 <div 
-                  className="rounded-lg p-6 border"
+                  className="rounded-lg p-4 md:p-6 border"
                   style={{ 
                     background: 'var(--bg-card)',
                     borderColor: 'var(--border)'
                   }}
                 >
-                  <div className="text-center mb-4">
+                  <div className="text-center mb-3 md:mb-4">
                     <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
                       Tempo Juntos
                     </div>
-                    <div className="text-2xl font-black mb-1" style={{ color: 'var(--primary)' }}>
+                    <div className="text-xl md:text-2xl font-black mb-1" style={{ color: 'var(--primary)' }}>
                       ∞
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 md:gap-3">
                     {timeUnits.map((unit, idx) => {
                       if (!unit || !unit.value || !unit.label) return null;
                       return (
                         <div
                           key={idx}
-                          className="p-4 rounded-xl text-center animate-fadeIn"
+                          className="p-3 md:p-4 rounded-xl text-center animate-fadeIn"
                           style={{ 
                             background: 'var(--demo-icon-bg)',
                             border: '2px solid var(--demo-card-border)'
                           }}
                         >
-                          <div className="text-3xl font-black mb-1" style={{ color: 'var(--primary)' }}>
+                          <div className="text-2xl md:text-3xl font-black mb-1" style={{ color: 'var(--primary)' }}>
                             {unit.value}
                           </div>
-                          <div className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--text-secondary)' }}>
+                          <div className="text-[10px] md:text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--text-secondary)' }}>
                             {unit.label}
                           </div>
                         </div>

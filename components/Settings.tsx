@@ -11,7 +11,6 @@ export default function Settings() {
 
   return (
     <div className="relative">
-      {/* Botão de Configurações */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--border)] rounded-full transition-all hover:scale-110 active:scale-95"
@@ -20,17 +19,14 @@ export default function Settings() {
         <Icons.Settings className="w-5 h-5 text-[var(--text)]" />
       </button>
 
-      {/* Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Overlay para fechar ao clicar fora */}
             <div
               className="fixed inset-0 z-40"
               onClick={() => setIsOpen(false)}
             />
 
-            {/* Menu */}
             <motion.div
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -43,7 +39,6 @@ export default function Settings() {
                   Configurações
                 </h3>
 
-                {/* Tema */}
                 <div className="space-y-2">
                   <label className="text-xs text-[var(--text-secondary)] font-medium">
                     Tema
@@ -88,7 +83,6 @@ export default function Settings() {
                   </button>
                 </div>
 
-                {/* Informação */}
                 <div className="mt-4 pt-4 border-t border-[var(--border)]">
                   <p className="text-xs text-[var(--text-secondary)]">
                     Suas preferências são salvas automaticamente.
