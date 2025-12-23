@@ -11,6 +11,7 @@ export default function CTA() {
 
   return (
     <section className="py-32 px-6 relative overflow-hidden bg-gradient-to-br from-[var(--bg-deep)] via-[var(--bg-section)] to-[var(--bg-deep)]">
+      {/* Background pattern overlay */}
       <div className="absolute inset-0 opacity-5" style={{ 
         backgroundImage: 'radial-gradient(circle at 2px 2px, var(--primary) 1px, transparent 0)',
         backgroundSize: '40px 40px'

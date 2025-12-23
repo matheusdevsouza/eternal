@@ -71,6 +71,7 @@ export function DemoPreview() {
         pointerEvents: previewCard ? 'auto' : 'none'
       }}
     >
+      {/* Área de placeholder sempre visível como background */}
       {!previewCard && (
         <div className="flex items-center justify-center p-6 min-h-[500px]">
           <p className="text-[var(--text-secondary)] text-sm md:text-base text-center max-w-md">
@@ -79,6 +80,7 @@ export function DemoPreview() {
         </div>
       )}
       
+      {/* Card que aparece e substitui o placeholder */}
       {previewCard && (
         <div 
           className={`w-full transition-all duration-400 ease-out rounded-2xl ${

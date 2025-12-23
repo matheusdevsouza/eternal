@@ -12,19 +12,16 @@ import { PhotosDemo, MusicDemo, LetterDemo, ThemeDemo, QRCodeDemo, ShareDemo } f
  * e a área de visualização (preview). Inclui lógica para manter as alturas
  * dos containers sincronizadas, garantindo uma experiência visual fluida.
  */
-
 export default function DemoSection() {
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-
     /**
      * Calcula e sincroniza a altura do container de preview com a altura
      * real da grade de cards. Utiliza requestAnimationFrame para garantir 
      * que o cálculo ocorra após as transformações de layout do navegador.
      */
-
     const syncHeights = () => {
       if (cardsContainerRef.current && previewContainerRef.current) {
         requestAnimationFrame(() => {
@@ -32,10 +29,12 @@ export default function DemoSection() {
             const isMobile = window.innerWidth < 1024;
             
             if (!isMobile) {
+              // Desktop: sincroniza com altura dos cards
               const cardsHeight = cardsContainerRef.current.offsetHeight;
               const finalHeight = Math.max(cardsHeight, 600);
               previewContainerRef.current.style.height = `${finalHeight}px`;
             }
+            // Mobile: remove altura inline para permitir crescimento automático
           }
         });
       }

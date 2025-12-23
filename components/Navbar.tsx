@@ -64,6 +64,7 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-[var(--navbar-bg)] backdrop-blur-xl border-b border-[var(--border)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
+          {/* Logo */}
           <Link href="/" className="flex items-center transition-all duration-300 hover:scale-110">
             <Image 
               src="/logo.png" 
@@ -76,6 +77,7 @@ export default function Navbar() {
             />
           </Link>
 
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <div
@@ -138,6 +140,7 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* CTA Button & Mobile Menu */}
           <div className="flex items-center gap-3">
             <Link
               href="/login"
@@ -152,10 +155,12 @@ export default function Navbar() {
               Ver Demo
             </button>
 
+            {/* Settings */}
             <div className="hidden sm:block">
               <Settings />
             </div>
 
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors"
@@ -179,6 +184,7 @@ export default function Navbar() {
       </div>
     </nav>
 
+    {/* Mobile Menu - Fullscreen */}
     <AnimatePresence>
       {mobileMenuOpen && (
         <motion.div
