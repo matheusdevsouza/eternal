@@ -194,3 +194,5 @@ export function getClientIP(request: Request): string {
 export function getUserAgent(request: Request): string {
   return request.headers.get('user-agent') || 'unknown';
 }
+
+
