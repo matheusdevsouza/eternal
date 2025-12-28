@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CTA from '@/components/CTA';
 import { Icons } from '@/components/Icons';
+import FAQ from '@/components/FAQ';
 
 interface Tier {
   name: string;
@@ -295,6 +296,7 @@ export default function PrecosPage() {
         </div>
       </section>
 
+<<<<<<< HEAD
       {/* FAQ Section */}
       <section className="py-24 px-6 border-y border-[var(--border)] bg-gradient-to-b from-[var(--bg-gradient-start)]/50 to-[var(--bg-gradient-end)]">
         <div className="max-w-3xl mx-auto">
@@ -378,6 +380,9 @@ export default function PrecosPage() {
           </div>
         </div>
       </section>
+=======
+     <FAQ />
+>>>>>>> 1080e1821882c6618a22368044b4c3557b3fecce
 
       {/* CTA Section */}
       <CTA />
