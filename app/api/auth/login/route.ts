@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
 import {
   verifyPassword,
   sanitizeEmail,
@@ -17,27 +14,35 @@ import {
   SECURITY_CONFIG,
 } from '@/lib/auth';
 import { sendSecurityAlertEmail } from '@/lib/email';
+import { rateLimitMiddleware, contentTypeMiddleware } from '@/lib/middleware';
+import { isValidEmail } from '@/lib/security';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /**
  * @api {post} /api/auth/login Autenticação de Usuário
- * @description Realiza o login do usuário, validando credenciais, gerando uma sessão 
- * no banco de dados e retornando um JWT via cookie HTTP-only.
- * * Medidas de Proteção Implementadas:
- * 1. Sanitização de Entrada: Previne variações de escrita de e-mail.
- * 2. Rate Limiting / Brute Force: Bloqueio temporário após X tentativas falhas (configurável).
- * 3. Alerta de Segurança: Notificação automática por e-mail em caso de bloqueio.
- * 4. Cookies Seguros: JWT persistido com flags httpOnly, secure e sameSite.
+ * @description Sistema completo de login com proteções avançadas
  */
 
 export async function POST(request: NextRequest) {
   try {
+
+    // Rate limiting mais restritivo para login
+
+    const rateLimitResponse = rateLimitMiddleware(request, 'login', 5, 15 * 60 * 1000);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Content-Type validation
+
+    const contentTypeResponse = contentTypeMiddleware(request);
+    if (contentTypeResponse) return contentTypeResponse;
+
     const prisma = getPrisma();
     const body = await request.json();
     const { email, password, rememberMe = false } = body;
 
-    /** * Validação de Presença: Garante que os campos mínimos foram preenchidos
-     * antes de iniciar operações de banco ou criptografia.
-     */
+    // Validação de campos
 
     if (!email || !password) {
       return NextResponse.json(
@@ -46,34 +51,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /** * Validação Formato: Verifica integridade do e-mail pós-sanitização.
-     */
-    
+    // Sanitização e validação de email
+
     const sanitizedEmail = sanitizeEmail(email);
-    if (!validateEmail(sanitizedEmail)) {
+    if (!isValidEmail(sanitizedEmail)) {
       return NextResponse.json(
         { error: 'Email inválido' },
         { status: 400 }
       );
     }
 
-    /** * Recuperação de Perfil: Busca o usuário pelo e-mail único.
-     */
+    // Busca usuário
 
     const user = await prisma.user.findUnique({
       where: { email: sanitizedEmail },
     });
 
     if (!user) {
+      
+      // Delay artificial para prevenir timing attacks
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return NextResponse.json(
         { error: 'Email ou senha incorretos' },
         { status: 401 }
       );
     }
 
-    /** * Verificação de Estado da Conta: Implementa a lógica de lockout.
-     * Se a conta estiver bloqueada, calcula o tempo restante e impede a verificação da senha.
-     */
+    // Verifica bloqueio de conta
 
     if (shouldLockAccount(user.loginAttempts, user.lockedUntil)) {
       const minutesRemaining = getLockoutTimeRemaining(user.lockedUntil);
@@ -88,10 +93,8 @@ export async function POST(request: NextRequest) {
         );
       }
       
-      /** * Auto-Desbloqueio: Se o tempo de expiração do bloqueio passou,
-       * reseta o estado do usuário para permitir nova tentativa.
-       */
-
+      // Auto-desbloqueio se o tempo passou
+    
       await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -101,16 +104,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    /** * Validação Criptográfica: Compara o hash da senha enviada com o armazenado.
-     */
-
+    // Verifica senha
+    
     const passwordValid = await verifyPassword(password, user.password);
 
     if (!passwordValid) {
-
-      /** * Fluxo de Falha: Incrementa contadores e verifica se o limite de tentativas foi atingido.
-       */
-
       const newAttempts = user.loginAttempts + 1;
       const shouldLock = newAttempts >= SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS;
 
@@ -125,15 +123,18 @@ export async function POST(request: NextRequest) {
       });
 
       if (shouldLock) {
-
-        /** * Alerta Reativo: Dispara e-mail de aviso ao usuário informando o bloqueio da conta.
-         */
+    
+        // Log de auditoria
+    
+        await logAuditEvent(user.id, AuditAction.ACCOUNT_LOCKED, request, {
+          attempts: newAttempts,
+        });
 
         sendSecurityAlertEmail(
           user.email,
           user.name || 'Usuário',
           `Detectamos ${SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS} tentativas de login falhas. Sua conta foi temporariamente bloqueada por 15 minutos.`
-        ).catch(error => console.error('[SECURITY_ALERT_ERROR] Falha no disparo de alerta:', error));
+        ).catch(error => console.error('[SECURITY_ALERT_ERROR]', error));
 
         return NextResponse.json(
           {
@@ -142,6 +143,13 @@ export async function POST(request: NextRequest) {
           { status: 423 }
         );
       }
+
+      // Log de tentativa falha
+    
+      await logAuditEvent(user.id, AuditAction.LOGIN_FAILED, request, {
+        attempts: newAttempts,
+        attemptsLeft: SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS - newAttempts,
+      });
 
       const attemptsLeft = SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS - newAttempts;
       return NextResponse.json(
@@ -153,9 +161,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /** * Verificação de Ativação: Garante que o usuário confirmou o e-mail antes do acesso.
-     */
-
+    // Verifica se email foi verificado
+    
     if (!user.emailVerified) {
       return NextResponse.json(
         {
@@ -167,23 +174,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /** * Reset de Segurança: Após sucesso, limpa falhas anteriores e atualiza timestamp de acesso.
-     */
-
+    // Reset de segurança após login bem-sucedido
+    
     await prisma.user.update({
       where: { id: user.id },
       data: {
         loginAttempts: 0,
         lockedUntil: null,
         lastLoginAt: new Date(),
+        lastLoginIP: getClientIP(request),
       },
     });
 
-    /** * Gestão de Sessão:
-     * 1. Gera um token opaco para persistência no banco (revogável).
-     * 2. Define a duração baseada na preferência "Remember Me".
-     */
+    // Log de auditoria
+    
+    await logAuditEvent(user.id, AuditAction.LOGIN, request, {
+      rememberMe,
+      sessionId: session.id,
+    });
 
+    // Cria sessão
+    
     const sessionToken = generateSecureToken();
     const sessionDuration = rememberMe
       ? SECURITY_CONFIG.SESSION_DURATION * 4 
@@ -199,9 +210,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    /** * Geração de JWT: Cria o token assinado contendo o payload essencial para o front-end.
-     */
-
+    // Gera JWT
+    
     const jwt = generateJWT(
       {
         userId: user.id,
@@ -211,9 +221,8 @@ export async function POST(request: NextRequest) {
       rememberMe ? '28d' : '7d'
     );
 
-    /** * Construção da Resposta: Prepara o JSON de retorno e anexa o cookie de sessão.
-     */
-
+    // Resposta
+    
     const response = NextResponse.json(
       {
         success: true,
@@ -229,9 +238,8 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
 
-    /** * Configuração do Cookie: Flags rigorosas para mitigar XSS e CSRF.
-     */
-
+    // Cookie seguro
+    
     response.cookies.set('session', jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -242,12 +250,7 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-
-    /** * Tratamento de Erro Global: Logs detalhados para o servidor, 
-     * mensagem opaca para o cliente final.
-     */
-
-    console.error('[CRITICAL_ERROR] Login flow failure:', error);
+    console.error('[LOGIN_ERROR]', error);
     return NextResponse.json(
       { error: 'Erro ao fazer login. Tente novamente mais tarde.' },
       { status: 500 }

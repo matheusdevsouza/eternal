@@ -41,7 +41,7 @@ export default function Navbar() {
     },
     {
       label: 'Preços',
-      onClick: () => scrollToSection('precos')
+      href: '/precos'
     },
     {
       label: 'Blog',
@@ -128,6 +128,14 @@ export default function Navbar() {
                       )}
                     </AnimatePresence>
                   </>
+                ) : item.href ? (
+                  <Link
+                    href={item.href}
+                    onClick={item.onClick}
+                    className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors rounded-lg"
+                  >
+                    {item.label}
+                  </Link>
                 ) : (
                   <button
                     onClick={item.onClick}
@@ -148,12 +156,12 @@ export default function Navbar() {
             >
               Entrar
             </Link>
-            <button
-              onClick={() => scrollToSection('precos')}
+            <Link
+              href="/como-funciona"
               className="hidden sm:block px-6 py-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-full text-sm font-bold transition-all"
             >
               Ver Demo
-            </button>
+            </Link>
 
             {/* Settings */}
             <div className="hidden sm:block">
@@ -236,6 +244,17 @@ export default function Navbar() {
                         )}
                       </AnimatePresence>
                     </div>
+                  ) : item.href ? (
+                    <Link
+                      href={item.href}
+                      onClick={() => {
+                        item.onClick?.();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-4 text-left text-base font-bold text-[var(--text)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--bg-card)]"
+                    >
+                      {item.label}
+                    </Link>
                   ) : (
                     <button
                       onClick={() => {
@@ -258,15 +277,13 @@ export default function Navbar() {
               >
                 Entrar
               </Link>
-              <button
-                onClick={() => {
-                  scrollToSection('precos');
-                  setMobileMenuOpen(false);
-                }}
+              <Link
+                href="/como-funciona"
+                onClick={() => setMobileMenuOpen(false)}
                 className="block w-full px-6 py-4 bg-[var(--bg-card)] border-2 border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-2xl text-base font-bold text-center transition-all"
               >
                 Ver Demo
-              </button>
+              </Link>
               <div className="flex justify-center pt-4">
                 <Settings />
               </div>

@@ -32,12 +32,12 @@ export default function CTA() {
             Junte-se a milhares de casais que já transformaram seus momentos em memórias digitais inesquecíveis
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => scrollToSection('precos')}
+            <Link
+              href="/precos"
               className="px-10 py-5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-bold rounded-2xl transition-all shadow-[0_0_40px_var(--shadow-color)] hover:scale-105 active:scale-95"
             >
               Ver Planos e Preços
-            </button>
+            </Link>
             <Link
               href="/login"
               className="px-10 py-5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] text-[var(--text)] font-bold rounded-2xl transition-all"

@@ -91,7 +91,7 @@ export function verifyJWT(token: string): any {
 }
 
 /**
- * Gera token aleatório seguro
+ * Gera token aleatório seguro usando crypto do Node.js
  */
 
 export function generateSecureToken(length: number = 32): string {
@@ -124,7 +124,7 @@ export function validateEmail(email: string): boolean {
 }
 
 /**
- * Gera hash SHA-256
+ * Gera hash SHA-256 usando crypto do Node.js
  */
 
 export function generateSHA256(data: string): string {
@@ -194,6 +194,9 @@ export function getClientIP(request: Request): string {
 export function getUserAgent(request: Request): string {
   return request.headers.get('user-agent') || 'unknown';
 }
+
+
+
 
 
 

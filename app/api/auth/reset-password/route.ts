@@ -1,37 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
+import { hashPassword, validatePassword, isTokenExpired } from '@/lib/auth';
+import { sendPasswordChangedEmail } from '@/lib/email';
+import { rateLimitMiddleware, contentTypeMiddleware } from '@/lib/middleware';
+import { logAuditEvent, AuditAction } from '@/lib/audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-import {
-  hashPassword,
-  validatePassword,
-  isTokenExpired,
-} from '@/lib/auth';
-import { sendPasswordChangedEmail } from '@/lib/email';
 
 /**
- * Endpoint para redefinição de senha de usuário via token.
- * * Este fluxo realiza:
- * 1. Validação de integridade dos dados e complexidade da senha.
- * 2. Verificação de validade, expiração e unicidade do token de reset.
- * 3. Atualização da credencial do usuário e reset de estados de bloqueio (lockout).
- * 4. Invalidação de sessões ativas para garantir segurança pós-troca.
- * 5. Notificação assíncrona via e-mail.
- * * @param {NextRequest} request - Requisição contendo token, password e confirmPassword no corpo (JSON).
- * @returns {Promise<NextResponse>} Resposta JSON com status da operação ou mensagens de erro detalhadas.
+ * @api {post} /api/auth/reset-password Redefinição de Senha
+ * @description Redefine a senha do usuário usando token de reset
  */
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResponse = rateLimitMiddleware(request, 'reset-password', 5, 60 * 60 * 1000);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    const contentTypeResponse = contentTypeMiddleware(request);
+    if (contentTypeResponse) return contentTypeResponse;
+
     const prisma = getPrisma();
     const body = await request.json();
     const { token, password, confirmPassword } = body;
-
-    /**
-     * Validação de integridade: Garante que todos os parâmetros necessários 
-     * foram enviados e que a confirmação de senha coincide com a nova senha.
-     */
 
     if (!token || !password || !confirmPassword) {
       return NextResponse.json(
@@ -47,11 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /**
-     * Validação de Segurança (Password Policy):
-     * Verifica se a nova senha atende aos requisitos de complexidade 
-     * definidos na biblioteca de autenticação do sistema.
-     */
+    // Validação de senha
 
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
@@ -61,11 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /**
-     * Recuperação do Token:
-     * Busca o registro do token no banco de dados incluindo os dados do 
-     * usuário associado para processamento posterior.
-     */
+    // Busca token
 
     const resetToken = await prisma.passwordResetToken.findUnique({
       where: { token },
@@ -79,11 +63,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /**
-     * Verificação de Expiração (TTL):
-     * Caso o token esteja expirado, removemos o registro do banco para 
-     * limpeza de dados órfãos e retornamos status 410 (Gone).
-     */
+    // Verifica expiração
 
     if (isTokenExpired(resetToken.expiresAt)) {
       await prisma.passwordResetToken.delete({
@@ -96,11 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /**
-     * Prevenção de Reuso:
-     * Garante que tokens de uso único não possam ser utilizados mais de uma vez, 
-     * mitigando ataques de repetição.
-     */
+    // Verifica se já foi usado
 
     if (resetToken.used) {
       return NextResponse.json(
@@ -109,13 +85,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Hash da nova senha
+
     const hashedPassword = await hashPassword(password);
 
-    /**
-     * Atualização Atômica do Usuário:
-     * Além de atualizar a hash da senha, resetamos tentativas de login e 
-     * removemos bloqueios temporários (brute-force protection).
-     */
+    // Atualiza usuário
 
     await prisma.user.update({
       where: { id: resetToken.userId },
@@ -126,36 +100,29 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    /**
-     * Invalidação do Token:
-     * Marca o token como utilizado para prevenir novas tentativas com o mesmo segredo.
-     */
+    // Marca token como usado
 
     await prisma.passwordResetToken.update({
       where: { id: resetToken.id },
       data: { used: true },
     });
 
-    /**
-     * Revogação de Acesso:
-     * Por segurança, removemos todas as sessões ativas (tokens de acesso/cookies) 
-     * do usuário. Isso força o re-login em todos os dispositivos após a troca de senha.
-     */
+    // Invalida todas as sessões
 
     await prisma.session.deleteMany({
       where: { userId: resetToken.userId },
     });
 
-    /**
-     * Notificação de Segurança:
-     * Dispara e-mail informando sobre a alteração. O erro é capturado 
-     * silenciosamente no log para não interromper a resposta de sucesso ao cliente.
-     */
-
+    // Envia email de confirmação
+    
     sendPasswordChangedEmail(
       resetToken.user.email,
       resetToken.user.name || 'Usuário'
-    ).catch(error => console.error('Erro crítico no envio de confirmação de senha:', error));
+    ).catch(error => console.error('[EMAIL_ERROR]', error));
+
+    // Log de auditoria
+    
+    await logAuditEvent(resetToken.userId, AuditAction.PASSWORD_RESET_COMPLETE, request);
 
     return NextResponse.json(
       {
@@ -165,16 +132,9 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-
-    /**
-     * Tratamento de Exceções Globais:
-     * Erros não mapeados durante o processamento resultam em 500 para evitar 
-     * vazamento de informações sensíveis da stack de execução.
-     */
-
-    console.error('Falha na rota reset-password:', error);
+    console.error('[RESET_PASSWORD_ERROR]', error);
     return NextResponse.json(
-      { error: 'Erro ao redefinir senha. Tente novamente mais tarde.' },
+      { error: 'Erro ao redefinir senha' },
       { status: 500 }
     );
   }

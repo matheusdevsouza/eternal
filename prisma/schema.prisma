@@ -2,8 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
-  engineType = "binary"
+  previewFeatures = []
 }
 
 datasource db {
@@ -15,13 +14,14 @@ model User {
   id                String    @id @default(cuid())
   email             String    @unique
   name              String?
-  password          String
+  password          String    // Hash bcrypt
   plan              Plan      @default(START)
   emailVerified     Boolean   @default(false)
   emailVerifiedAt   DateTime?
   twoFactorEnabled  Boolean   @default(false)
-  twoFactorSecret   String?
+  twoFactorSecret   String?   // Criptografado
   lastLoginAt       DateTime?
+  lastLoginIP       String?
   loginAttempts     Int       @default(0)
   lockedUntil       DateTime?
   createdAt         DateTime  @default(now())
@@ -32,6 +32,11 @@ model User {
   verificationTokens VerificationToken[]
   passwordResetTokens PasswordResetToken[]
   sessions          Session[]
+  auditLogs         AuditLog[]
+  
+  @@index([email])
+  @@index([emailVerified])
+  @@index([lockedUntil])
 }
 
 // Modelo de Token de Verificação de Email
@@ -155,4 +160,20 @@ enum SubscriptionStatus {
   ACTIVE
   CANCELLED
   EXPIRED
+}
+
+// Modelo de Auditoria de Segurança
+model AuditLog {
+  id          String    @id @default(cuid())
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action      String    // login, logout, password_change, etc.
+  ipAddress   String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }

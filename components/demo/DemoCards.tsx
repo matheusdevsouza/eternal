@@ -179,7 +179,7 @@ const ActiveDemoCard = ({
     ref={cardRef}
     className={`rounded-2xl border transition-all duration-300 relative flex flex-col hover:shadow-xl ${
       isPreview 
-        ? 'p-6 md:p-10 w-full' 
+        ? 'p-6 md:p-10 w-full min-h-[790px] lg:min-h-[780px]' 
         : 'p-6 overflow-hidden'
     } ${isPreview ? 'demo-card-preview' : ''}`}
     style={{
@@ -1227,7 +1227,6 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
  * 
  * @example
  * calculateTimeDifference('2021-01-15')
- * // Retorna: { years: 4, months: 11, days: 7, hours: 14 }
  */
 
 const calculateTimeDifference = (startDateStr: string) => {

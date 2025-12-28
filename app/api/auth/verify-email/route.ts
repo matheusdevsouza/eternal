@@ -1,93 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
+import { isTokenExpired } from '@/lib/auth';
+import { sendWelcomeEmail } from '@/lib/email';
+import { rateLimitMiddleware } from '@/lib/middleware';
+import { logAuditEvent, AuditAction } from '@/lib/audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-import {
-  hashPassword,
-  validatePassword,
-  isTokenExpired,
-} from '@/lib/auth';
-import { sendPasswordChangedEmail } from '@/lib/email';
 
 /**
- * Endpoint para redefinição de senha de usuário via token de recuperação.
- * * Este fluxo é a etapa final do processo de recuperação de conta ("Forgot Password").
- * Ele realiza a validação de integridade do token, aplica políticas de segurança
- * de senha, invalida sessões existentes para garantir segurança e notifica o usuário.
- * * @param {NextRequest} request - Objeto da requisição contendo o corpo em JSON:
- * - token: O segredo único enviado por e-mail.
- * - password: A nova senha desejada.
- * - confirmPassword: A confirmação da nova senha.
- * * @returns {Promise<NextResponse>} JSON indicando sucesso ou erro com status HTTP apropriado.
+ * @api {post} /api/auth/verify-email Verificação de Email
+ * @description Verifica o email do usuário através de token
  */
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResponse = rateLimitMiddleware(request, 'verify-email', 5, 60 * 60 * 1000);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const prisma = getPrisma();
     const body = await request.json();
-    const { token, password, confirmPassword } = body;
+    const { token } = body;
 
-    /**
-     * Validação de Parâmetros:
-     * Garante que todos os campos obrigatórios foram fornecidos e que
-     * a senha e sua confirmação são idênticas antes de prosseguir.
-     */
-
-    if (!token || !password || !confirmPassword) {
+    if (!token) {
       return NextResponse.json(
-        { error: 'Todos os campos são obrigatórios' },
+        { error: 'Token é obrigatório' },
         { status: 400 }
       );
     }
 
-    if (password !== confirmPassword) {
-      return NextResponse.json(
-        { error: 'As senhas não coincidem' },
-        { status: 400 }
-      );
-    }
-
-    /**
-     * Validação de Política de Senha:
-     * Invoca o motor centralizado de validação para garantir que a nova senha
-     * atenda aos requisitos de complexidade (ex: tamanho, caracteres especiais).
-     */
-
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.valid) {
-      return NextResponse.json(
-        { error: 'Senha fraca', details: passwordValidation.errors },
-        { status: 400 }
-      );
-    }
-
-    /**
-     * Busca e Validação de Existência do Token:
-     * O token deve existir no banco e estar associado a um usuário válido.
-     */
-
-    const resetToken = await prisma.passwordResetToken.findUnique({
+    const verificationToken = await prisma.verificationToken.findUnique({
       where: { token },
       include: { user: true },
     });
 
-    if (!resetToken) {
+    if (!verificationToken) {
       return NextResponse.json(
         { error: 'Token inválido' },
         { status: 404 }
       );
     }
 
-    /**
-     * Validação de Expiração (TTL):
-     * Caso o token tenha expirado, removemos o registro do banco imediatamente
-     * para limpeza (garbage collection manual) e informamos o cliente.
-     */
-
-    if (isTokenExpired(resetToken.expiresAt)) {
-      await prisma.passwordResetToken.delete({
-        where: { id: resetToken.id },
+    if (isTokenExpired(verificationToken.expiresAt)) {
+      await prisma.verificationToken.delete({
+        where: { id: verificationToken.id },
       });
 
       return NextResponse.json(
@@ -96,93 +52,57 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /**
-     * Proteção contra Ataques de Reuso (Replay Attacks):
-     * Tokens de reset devem ser de uso único. Se o campo 'used' for verdadeiro,
-     * a requisição é rejeitada por segurança.
-     */
+    // Verifica se já foi verificado
 
-    if (resetToken.used) {
+    if (verificationToken.user.emailVerified) {
+      await prisma.verificationToken.delete({
+        where: { id: verificationToken.id },
+      });
+
       return NextResponse.json(
-        { error: 'Token já utilizado' },
+        { error: 'Email já foi verificado' },
         { status: 400 }
       );
     }
 
-    /**
-     * Criptografia e Persistência:
-     * Gera a hash da nova senha utilizando o algoritmo padrão definido em @/lib/auth.
-     */
-
-    const hashedPassword = await hashPassword(password);
-
-    /**
-     * Atualização de Credenciais e Segurança da Conta:
-     * Além de atualizar a senha, resetamos o contador de tentativas falhas e
-     * removemos qualquer bloqueio temporal (lockout) ativo no usuário.
-     */
+    // Atualiza usuário
 
     await prisma.user.update({
-      where: { id: resetToken.userId },
+      where: { id: verificationToken.userId },
       data: {
-        password: hashedPassword,
-        loginAttempts: 0,
-        lockedUntil: null,
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
       },
     });
 
-    /**
-     * Invalidação do Token Processado:
-     * Marcamos o token como usado para impedir que o mesmo link seja
-     * reutilizado em caso de vazamento histórico de logs de e-mail.
-     */
+    // Remove token usado
 
-    await prisma.passwordResetToken.update({
-      where: { id: resetToken.id },
-      data: { used: true },
+    await prisma.verificationToken.delete({
+      where: { id: verificationToken.id },
     });
 
-    /**
-     * Revogação Global de Acesso (Session Invalidation):
-     * Por segurança, removemos todas as sessões ativas do usuário. Isso garante
-     * que, se a senha foi trocada devido a um comprometimento, o invasor seja
-     * desconectado de todos os dispositivos imediatamente.
-     */
+    // Envia email de boas-vindas
 
-    await prisma.session.deleteMany({
-      where: { userId: resetToken.userId },
-    });
+    sendWelcomeEmail(
+      verificationToken.user.email,
+      verificationToken.user.name || 'Usuário'
+    ).catch(error => console.error('[EMAIL_ERROR]', error));
 
-    /**
-     * Notificação de Segurança:
-     * Dispara um e-mail informando o usuário sobre a alteração. O processo é
-     * assíncrono (não aguardamos o envio) para otimizar o tempo de resposta da API.
-     */
-
-    sendPasswordChangedEmail(
-      resetToken.user.email,
-      resetToken.user.name || 'Usuário'
-    ).catch(error => console.error('Falha ao enviar e-mail de confirmação pós-reset:', error));
+    // Log de auditoria
+    
+    await logAuditEvent(verificationToken.userId, AuditAction.EMAIL_VERIFIED, request);
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Senha redefinida com sucesso! Você já pode fazer login com a nova senha.',
+        message: 'Email verificado com sucesso!',
       },
       { status: 200 }
     );
   } catch (error) {
-
-
-    /**
-     * Tratamento de Erros Inesperados:
-     * Captura falhas de banco de dados ou erros de runtime. O status 500
-     * é retornado para não expor detalhes da infraestrutura ao atacante.
-     */
-
-    console.error('Erro crítico na rota de reset de senha:', error);
+    console.error('[VERIFY_EMAIL_ERROR]', error);
     return NextResponse.json(
-      { error: 'Erro interno ao processar redefinição. Tente novamente.' },
+      { error: 'Erro ao verificar email' },
       { status: 500 }
     );
   }

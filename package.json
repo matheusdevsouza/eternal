@@ -7,7 +7,9 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "node -e \"try { require('child_process').execSync('npx prisma generate', {stdio:'inherit'}) } catch(e) {}\"",
+    "prisma:generate": "prisma generate",
+    "prisma:fix": "powershell -ExecutionPolicy Bypass -File ./scripts/fix-prisma-windows.ps1"
   },
   "dependencies": {
     "@prisma/client": "^7.2.0",

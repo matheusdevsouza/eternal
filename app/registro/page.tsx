@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { ToastContainer, toast } from '@/components/Toast';
 
 export default function RegistroPage() {
   const [formData, setFormData] = useState({
@@ -26,20 +27,59 @@ export default function RegistroPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validações básicas
+
     if (formData.password !== formData.confirmPassword) {
-      alert('As senhas não coincidem');
+      toast.error('As senhas não coincidem');
       return;
     }
+    
     if (!acceptTerms) {
-      alert('Você precisa aceitar os termos de uso');
+      toast.warning('Você precisa aceitar os termos de uso');
       return;
     }
+    
     setLoading(true);
-    setTimeout(() => setLoading(false), 1000);
+    
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+
+        toast.error(data.error || 'Erro ao criar conta');
+        setLoading(false);
+        return;
+      }
+
+      toast.success(data.message || 'Conta criada com sucesso!');
+
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Erro ao criar conta:', error);
+      toast.error('Erro ao criar conta. Verifique sua conexão e tente novamente.');
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#0F0507] text-[#FFF1F2]">
+      <ToastContainer />
       <Navbar />
       
       <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">

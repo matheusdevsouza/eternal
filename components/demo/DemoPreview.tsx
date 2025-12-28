@@ -73,7 +73,7 @@ export function DemoPreview() {
     >
       {/* Área de placeholder sempre visível como background */}
       {!previewCard && (
-        <div className="flex items-center justify-center p-6 min-h-[500px]">
+        <div className="absolute inset-0 flex items-center justify-center p-6">
           <p className="text-[var(--text-secondary)] text-sm md:text-base text-center max-w-md">
             Clique no botão <span className="font-bold text-[var(--primary)]">"Iniciar Demo"</span> em qualquer card para ver a demonstração interativa.
           </p>
@@ -83,8 +83,8 @@ export function DemoPreview() {
       {/* Card que aparece e substitui o placeholder */}
       {previewCard && (
         <div 
-          className={`w-full transition-all duration-400 ease-out rounded-2xl ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+          className={`w-full transition-opacity duration-400 ease-out rounded-2xl min-h-[500px] lg:min-h-[600px] ${
+            isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           style={{ pointerEvents: isVisible ? 'auto' : 'none' }}
         >

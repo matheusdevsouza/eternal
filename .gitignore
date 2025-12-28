@@ -61,3 +61,10 @@ Thumbs.db
 # uploads (desenvolvimento)
 /public/uploads
 /tmp
+
+# db
+database/*
+*.sql
+
+# scripts
+scripts/*

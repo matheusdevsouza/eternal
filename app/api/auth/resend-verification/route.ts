@@ -1,35 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
+import { sanitizeEmail, generateSecureToken, getExpiryDate, SECURITY_CONFIG } from '@/lib/auth';
+import { sendVerificationEmail } from '@/lib/email';
+import { rateLimitMiddleware, contentTypeMiddleware } from '@/lib/middleware';
+import { isValidEmail } from '@/lib/security';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-import {
-  sanitizeEmail,
-  validateEmail,
-  generateSecureToken,
-  getExpiryDate,
-  SECURITY_CONFIG,
-} from '@/lib/auth';
-import { sendVerificationEmail } from '@/lib/email';
 
 /**
- * @api {post} /api/auth/resend-verification Reenviar E-mail de Verificação
- * @description Gera um novo token de validação de conta e dispara o e-mail de instruções.
- * * Estratégia de Operação:
- * 1. Validação de Estado: Impede o reenvio para contas que já foram validadas.
- * 2. Ciclo de Vida do Token: Implementa uma política de "token único ativo", 
- * removendo pendências anteriores antes de gerar a nova.
- * 3. Expiração Dinâmica: O tempo de vida do token é gerido via SECURITY_CONFIG.
+ * @api {post} /api/auth/resend-verification Reenvio de Email de Verificação
+ * @description Reenvia email de verificação para usuário não verificado
  */
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResponse = rateLimitMiddleware(request, 'resend-verification', 3, 60 * 60 * 1000);
+    if (rateLimitResponse) return rateLimitResponse;
+
+    const contentTypeResponse = contentTypeMiddleware(request);
+    if (contentTypeResponse) return contentTypeResponse;
+
     const prisma = getPrisma();
     const body = await request.json();
     const { email } = body;
-
-    /** * Validação de Entrada: Garante que o campo foi submetido.
-     */
 
     if (!email) {
       return NextResponse.json(
@@ -38,57 +32,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /** * Sanitização: Normaliza o input para evitar erros de case-sensitivity
-     * ou espaços em branco acidentais antes da consulta à DB.
-     */
-
     const sanitizedEmail = sanitizeEmail(email);
-    if (!validateEmail(sanitizedEmail)) {
+    if (!isValidEmail(sanitizedEmail)) {
       return NextResponse.json(
         { error: 'Email inválido' },
         { status: 400 }
       );
     }
 
-    /** * Localização do Perfil: Verificamos a existência do utilizador.
-     * Nota: Diferente do "Esqueci a Senha", aqui retornamos 404 para feedback
-     * direto no fluxo de onboarding/ativação.
-     */
-
     const user = await prisma.user.findUnique({
       where: { email: sanitizedEmail },
     });
 
     if (!user) {
+
+      // Não revela se o email existe ou não (segurança)
+
       return NextResponse.json(
-        { error: 'Usuário não encontrado' },
-        { status: 404 }
+        {
+          success: true,
+          message: 'Se o email estiver cadastrado, você receberá um email de verificação.',
+        },
+        { status: 200 }
       );
     }
 
-    /** * Regra de Negócio: Evita o processamento e o envio de e-mails desnecessários
-     * se a conta já estiver num estado verificado.
-     */
-
     if (user.emailVerified) {
       return NextResponse.json(
-        { error: 'Email já verificado' },
+        { error: 'Email já foi verificado' },
         { status: 400 }
       );
     }
 
-    /** * Gestão de Concorrência: Removemos quaisquer tokens de verificação 
-     * gerados anteriormente. Isto previne que links antigos (e potencialmente expirados)
-     * confundam o utilizador ou causem conflitos de validação.
-     */
+    // Remove tokens antigos
 
     await prisma.verificationToken.deleteMany({
       where: { userId: user.id },
     });
 
-    /** * Geração de Credencial Temporária:
-     * O token é gerado com alta entropia e guardado com um timestamp de expiração.
-     */
+    // Gera novo token
 
     const verificationToken = generateSecureToken();
     await prisma.verificationToken.create({
@@ -99,16 +81,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    /** * Notificação Assíncrona: Disparo do e-mail. 
-     * Usamos 'await' aqui para garantir que o utilizador só recebe a confirmação 
-     * de sucesso se o serviço de e-mail aceitar o envio.
-     */
-
-    await sendVerificationEmail(
+    // Envia email
+    
+    sendVerificationEmail(
       user.email,
       user.name || 'Usuário',
       verificationToken
-    );
+    ).catch(error => console.error('[EMAIL_ERROR]', error));
 
     return NextResponse.json(
       {
@@ -118,14 +97,9 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-
-    /** * Tratamento de Exceção: Logamos o erro técnico para rastreabilidade 
-     * mas mantemos a interface do utilizador segura com mensagens amigáveis.
-     */
-
-    console.error('[AUTH_RESEND_ERROR] Falha ao reenviar verificação:', error);
+    console.error('[RESEND_VERIFICATION_ERROR]', error);
     return NextResponse.json(
-      { error: 'Erro ao reenviar email. Tente novamente mais tarde.' },
+      { error: 'Erro ao reenviar email de verificação' },
       { status: 500 }
     );
   }
