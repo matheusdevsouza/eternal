@@ -297,8 +297,11 @@ export default function PrecosPage() {
       </section>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
      <FAQ />
 =======
+=======
+>>>>>>> 84c14c71fc1128c184c19c668c77405d8286b882
       {/* FAQ Section */}
       <section className="py-24 px-6 border-y border-[var(--border)] bg-gradient-to-b from-[var(--bg-gradient-start)]/50 to-[var(--bg-gradient-end)]">
         <div className="max-w-3xl mx-auto">
@@ -382,7 +385,13 @@ export default function PrecosPage() {
           </div>
         </div>
       </section>
+<<<<<<< HEAD
 >>>>>>> 9af16fb4a5867892238b1d45f2d61d4a43e0dfdb
+=======
+=======
+     <FAQ />
+>>>>>>> 1080e1821882c6618a22368044b4c3557b3fecce
+>>>>>>> 84c14c71fc1128c184c19c668c77405d8286b882
 
       {/* CTA Section */}
       <CTA />
