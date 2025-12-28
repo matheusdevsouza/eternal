@@ -36,7 +36,7 @@ export default function CTA() {
               href="/precos"
               className="px-10 py-5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-bold rounded-2xl transition-all shadow-[0_0_40px_var(--shadow-color)] hover:scale-105 active:scale-95"
             >
-              AABBBCCCDDEEEEdddd
+              AABBBCCCDDEEEEddddffffff
             </Link>
             <Link
               href="/login"
