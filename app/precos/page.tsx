@@ -365,6 +365,16 @@ export default function PrecosPage() {
               answer="Sim! Nos planos Premium e Eternal você pode fazer upload das suas próprias músicas em formato MP3 para tornar o presente ainda mais personalizado."
               index={9}
             />
+            <FAQItem 
+              question="Testeeee"
+              answer="Testeeeeeeee"
+              index={10}
+            />
+            <FAQItem 
+              question="Testeeee"
+              answer="Testeeeeeeee"
+              index={11}
+            />
           </div>
         </div>
       </section>
