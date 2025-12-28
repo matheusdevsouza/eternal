@@ -371,7 +371,7 @@ export default function PrecosPage() {
               index={10}
             />
             <FAQItem 
-              question="Testeeee"
+              question="Testeeeeee"
               answer="Testeeeeeeee"
               index={11}
             />
