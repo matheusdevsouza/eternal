@@ -153,7 +153,7 @@ export default function RecursosPage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-[var(--primary)]">✓</span>
-                  Conformidade com LGPD
+                  Conformidade com RGPD
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-[var(--primary)]">✓</span>

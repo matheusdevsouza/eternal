@@ -26,7 +26,7 @@ export default function Footer() {
       { label: 'Termos de Uso', href: '/termos' },
       { label: 'Política de Privacidade', href: '/privacidade' },
       { label: 'Política de Cookies', href: '/cookies' },
-      { label: 'LGPD', href: '/lgpd' },
+      { label: 'RGPD', href: '/rgpd' },
       { label: 'DMCA', href: '/dmca' }
     ]
   };
