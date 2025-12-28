@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CTA from '@/components/CTA';
 import { Icons } from '@/components/Icons';
+import FAQ from '@/components/FAQ';
 
 interface Tier {
   name: string;
@@ -295,89 +296,7 @@ export default function PrecosPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 px-6 border-y border-[var(--border)] bg-gradient-to-b from-[var(--bg-gradient-start)]/50 to-[var(--bg-gradient-end)]">
-        <div className="max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
-              <span className="text-[var(--text)]">Perguntas</span>{' '}
-              <span className="text-[var(--primary)]">Frequentes</span>
-            </h2>
-            <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
-              Tire suas dúvidas sobre o Eternal Gift
-            </p>
-          </motion.div>
-          
-          <div className="space-y-4">
-            <FAQItem 
-              question="O link expira?"
-              answer="Não! No Eternal Gift, suas páginas são hospedadas de forma vitalícia para que você possa revisitá-las sempre."
-              index={0}
-            />
-            <FAQItem 
-              question="Posso editar depois de publicar?"
-              answer="No plano Eternal, a edição é ilimitada. Nos outros planos, você revisa tudo antes de gerar o link final."
-              index={1}
-            />
-            <FAQItem 
-              question="Como a pessoa recebe o presente?"
-              answer="Você recebe um link exclusivo e um QR Code em alta definição para imprimir em cartões ou enviar pelo WhatsApp."
-              index={2}
-            />
-            <FAQItem 
-              question="Posso adicionar vídeos?"
-              answer="Sim! Nos planos Premium e Eternal você pode adicionar vídeos curtos para tornar o presente ainda mais especial."
-              index={3}
-            />
-            <FAQItem 
-              question="Os dados são seguros?"
-              answer="Absolutamente! Utilizamos criptografia de ponta e servidores seguros. Suas memórias são privadas e protegidas."
-              index={4}
-            />
-            <FAQItem 
-              question="Quantas páginas posso criar por mês?"
-              answer="Em todos os planos você pode criar quantas páginas quiser durante o período da sua assinatura mensal! Não há limites de páginas."
-              index={5}
-            />
-            <FAQItem 
-              question="Posso cancelar minha assinatura a qualquer momento?"
-              answer="Sim! Você pode cancelar sua assinatura a qualquer momento. As páginas criadas durante o período ativo permanecerão disponíveis mesmo após o cancelamento."
-              index={6}
-            />
-            <FAQItem 
-              question="É possível compartilhar com senha?"
-              answer="Sim! Você pode proteger suas páginas com senha para garantir que apenas pessoas autorizadas tenham acesso ao seu presente especial."
-              index={7}
-            />
-            <FAQItem 
-              question="Qual formato de imagens é aceito?"
-              answer="Aceitamos JPG, PNG, GIF e WEBP. Recomendamos imagens com no mínimo 1920x1080 pixels para melhor qualidade na visualização."
-              index={8}
-            />
-            <FAQItem 
-              question="Posso usar músicas personalizadas?"
-              answer="Sim! Nos planos Premium e Eternal você pode fazer upload das suas próprias músicas em formato MP3 para tornar o presente ainda mais personalizado."
-              index={9}
-            />
-            <FAQItem 
-              question="Testeeeee"
-              answer="Testeeeeeeee"
-              index={10}
-            />
-            <FAQItem 
-              question="Testeeeeeeeeeee"
-              answer="Testeeeeeeeeeeee"
-              index={11}
-            />
-          </div>
-        </div>
-      </section>
+     <FAQ />
 
       {/* CTA Section */}
       <CTA />
