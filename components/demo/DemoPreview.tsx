@@ -7,6 +7,22 @@ import {
   ThemeDemo, QRCodeDemo, ShareDemo 
 } from './DemoCards';
 
+/**
+ * DemoPreview Component
+ * 
+ * Container principal para exibição dos demos interativos.
+ * Gerencia a renderização condicional dos cards de demo em modo expandido (preview).
+ * 
+ * Funcionalidades:
+ * - Gerenciamento de estado de visibilidade
+ * - Renderização do card correto baseado no contexto
+ * - Placeholder quando nenhum demo está ativo
+ * 
+ * @component
+ * @module components/demo/DemoPreview
+ * @requires ./DemoContext
+ * @requires ./DemoCards
+ */
 export function DemoPreview() {
   const { previewCard, setPreviewCard } = useDemo();
   const previewRef = useRef<HTMLDivElement>(null);
@@ -71,16 +87,16 @@ export function DemoPreview() {
         pointerEvents: previewCard ? 'auto' : 'none'
       }}
     >
-      {/* Área de placeholder sempre visível como background */}
+
       {!previewCard && (
         <div className="absolute inset-0 flex items-center justify-center p-6">
           <p className="text-[var(--text-secondary)] text-sm md:text-base text-center max-w-md">
-            Clique no botão <span className="font-bold text-[var(--primary)]">"Iniciar Demo"</span> em qualquer card para ver a demonstração interativa.
+            Click the <span className="font-bold text-[var(--primary)]">"Start Demo"</span> button on any card to see the interactive demo.
           </p>
         </div>
       )}
       
-      {/* Card que aparece e substitui o placeholder */}
+
       {previewCard && (
         <div 
           className={`w-full transition-opacity duration-400 ease-out rounded-2xl min-h-[500px] lg:min-h-[600px] ${

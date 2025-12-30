@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 function VerificationContent() {
   const searchParams = useSearchParams();
@@ -18,7 +18,7 @@ function VerificationContent() {
   useEffect(() => {
     if (!token) {
       setStatus('error');
-      setMessage('Token de verificação não encontrado');
+      setMessage('Verification token not found');
       return;
     }
 
@@ -40,11 +40,11 @@ function VerificationContent() {
           setMessage(data.error);
         } else {
           setStatus('error');
-          setMessage(data.error || 'Erro ao verificar email');
+          setMessage(data.error || 'Error verifying email');
         }
       } catch (err) {
         setStatus('error');
-        setMessage('Erro ao conectar com o servidor');
+        setMessage('Error connecting to server');
       }
     };
 
@@ -74,8 +74,8 @@ function VerificationContent() {
         {status === 'verifying' && (
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-[var(--primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <h2 className="text-2xl font-bold mb-2">Verificando email...</h2>
-            <p className="text-[var(--text-secondary)]">Aguarde um momento</p>
+            <h2 className="text-2xl font-bold mb-2">Verifying email...</h2>
+            <p className="text-[var(--text-secondary)]">Please wait a moment</p>
           </div>
         )}
 
@@ -86,13 +86,13 @@ function VerificationContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-green-900 dark:text-green-100">Email verificado!</h2>
+            <h2 className="text-2xl font-bold mb-2 text-green-900 dark:text-green-100">Email verified!</h2>
             <p className="text-green-700 dark:text-green-300 mb-6">{message}</p>
             <Link
               href="/login"
               className="inline-block px-8 py-3 bg-[var(--primary)] text-white font-bold rounded-xl hover:opacity-90 transition-all"
             >
-              Fazer Login
+              Login
             </Link>
           </div>
         )}
@@ -104,13 +104,13 @@ function VerificationContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-red-900 dark:text-red-100">Erro na verificação</h2>
+            <h2 className="text-2xl font-bold mb-2 text-red-900 dark:text-red-100">Verification error</h2>
             <p className="text-red-700 dark:text-red-300 mb-6">{message}</p>
             <Link
               href="/login"
               className="inline-block text-[var(--primary)] hover:underline font-medium"
             >
-              Voltar para login
+              Back to login
             </Link>
           </div>
         )}
@@ -122,13 +122,13 @@ function VerificationContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-yellow-900 dark:text-yellow-100">Token expirado</h2>
+            <h2 className="text-2xl font-bold mb-2 text-yellow-900 dark:text-yellow-100">Token expired</h2>
             <p className="text-yellow-700 dark:text-yellow-300 mb-6">{message}</p>
             <Link
               href="/login"
               className="inline-block px-8 py-3 bg-[var(--primary)] text-white font-bold rounded-xl hover:opacity-90 transition-all"
             >
-              Voltar para login
+              Back to login
             </Link>
           </div>
         )}

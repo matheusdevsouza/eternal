@@ -36,12 +36,12 @@ export default function Settings() {
             >
               <div className="p-4">
                 <h3 className="text-sm font-bold text-[var(--text)] mb-3 uppercase tracking-wider">
-                  Configurações
+                  Settings
                 </h3>
 
                 <div className="space-y-2">
                   <label className="text-xs text-[var(--text-secondary)] font-medium">
-                    Tema
+                    Theme
                   </label>
                   <button
                     onClick={() => {
@@ -55,14 +55,14 @@ export default function Settings() {
                         <>
                           <Icons.Moon className="w-5 h-5 text-[var(--primary)]" />
                           <span className="text-sm font-medium text-[var(--text)]">
-                            Modo Escuro
+                            Dark Mode
                           </span>
                         </>
                       ) : (
                         <>
                           <Icons.Sun className="w-5 h-5 text-[var(--primary)]" />
                           <span className="text-sm font-medium text-[var(--text)]">
-                            Modo Claro
+                            Light Mode
                           </span>
                         </>
                       )}
@@ -85,7 +85,7 @@ export default function Settings() {
 
                 <div className="mt-4 pt-4 border-t border-[var(--border)]">
                   <p className="text-xs text-[var(--text-secondary)]">
-                    Suas preferências são salvas automaticamente.
+                    Your preferences are saved automatically.
                   </p>
                 </div>
               </div>

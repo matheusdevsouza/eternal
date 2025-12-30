@@ -20,6 +20,7 @@ export const dynamic = 'force-dynamic';
 /**
  * @api {post} /api/auth/login Autenticação de Usuário
  */
+
 export async function POST(request: NextRequest) {
   try {
     const prisma = getPrisma();
@@ -27,6 +28,7 @@ export async function POST(request: NextRequest) {
     const { email, password, rememberMe = false } = body;
 
     // Validação de campos
+
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email e senha são obrigatórios' },
@@ -35,6 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Sanitização e validação de email
+
     const sanitizedEmail = sanitizeEmail(email);
     if (!validateEmail(sanitizedEmail)) {
       return NextResponse.json(
@@ -44,12 +47,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Busca usuário
+
     const user = await prisma.user.findUnique({
       where: { email: sanitizedEmail },
     });
 
     if (!user) {
+
       // Delay artificial para prevenir timing attacks
+
       await new Promise(resolve => setTimeout(resolve, 1000));
       return NextResponse.json(
         { error: 'Email ou senha incorretos' },
@@ -58,6 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verifica bloqueio de conta
+
     if (shouldLockAccount(user.loginAttempts, user.lockedUntil)) {
       const minutesRemaining = getLockoutTimeRemaining(user.lockedUntil);
       
@@ -72,6 +79,7 @@ export async function POST(request: NextRequest) {
       }
       
       // Auto-desbloqueio se o tempo passou
+
       await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -82,6 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verifica senha
+
     const passwordValid = await verifyPassword(password, user.password);
 
     if (!passwordValid) {
@@ -120,6 +129,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verifica se email foi verificado
+
     if (!user.emailVerified) {
       return NextResponse.json(
         {
@@ -132,6 +142,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Cria sessão
+
     const sessionToken = generateSecureToken();
     const sessionDuration = rememberMe
       ? SECURITY_CONFIG.SESSION_DURATION * 4 
@@ -148,6 +159,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Reset de segurança após login bem-sucedido
+
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -159,6 +171,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Gera JWT
+
     const jwt = generateJWT(
       {
         userId: user.id,
@@ -169,6 +182,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Resposta
+
     const response = NextResponse.json(
       {
         success: true,
@@ -185,6 +199,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Cookie seguro
+    
     response.cookies.set('session', jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

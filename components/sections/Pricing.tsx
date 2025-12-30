@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Icons } from './Icons';
+import { Icons } from '../ui/Icons';
 
 interface Tier {
   name: string;
@@ -25,7 +25,7 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
     >
       {tier.popular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[var(--primary)] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
-          Mais Popular
+          Most Popular
         </div>
       )}
       
@@ -33,7 +33,7 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
         <h3 className="text-lg font-bold text-[var(--text-secondary)] mb-2">{tier.name}</h3>
         <div className="flex items-baseline gap-1">
           <span className="text-4xl font-black text-[var(--text)]">R${tier.price}</span>
-          <span className="text-[var(--text-light)] text-sm">/mês</span>
+          <span className="text-[var(--text-light)] text-sm">/month</span>
         </div>
       </div>
       
@@ -55,7 +55,7 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
             : 'bg-[var(--bg-card-hover)] hover:bg-[var(--border)] text-[var(--text)] border border-[var(--border)]'
         }`}
       >
-        Começar agora
+        Start now
       </button>
     </motion.div>
   );
@@ -67,11 +67,11 @@ export default function Pricing() {
       name: 'Start',
       price: '29',
       features: [
-        'Páginas ilimitadas',
-        'Até 5 Fotos HD por página',
-        'Texto personalizado',
-        'Link público',
-        'QR Code padrão'
+        'Unlimited Pages',
+        'Up to 5 HD Photos per page',
+        'Custom text',
+        'Public link',
+        'Standard QR Code'
       ]
     },
     {
@@ -79,54 +79,34 @@ export default function Pricing() {
       price: '59',
       popular: true,
       features: [
-        'Páginas ilimitadas',
-        'Até 15 Fotos HD por página',
-        'Música de fundo',
-        'Contador de tempo',
-        'Animações premium',
-        'QR Code customizado'
+        'Unlimited Pages',
+        'Up to 15 HD Photos per page',
+        'Background music',
+        'Time counter',
+        'Premium animations',
+        'Custom QR Code'
       ]
     },
     {
       name: 'Eternal',
       price: '99',
       features: [
-        'Páginas ilimitadas',
-        'Até 30 Fotos HD por página',
-        'Música ilimitada',
-        'Domínio personalizado',
-        'Edição Vitalícia',
-        'Suporte Prioritário'
+        'Unlimited Pages',
+        'Up to 30 HD Photos per page',
+        'Unlimited music',
+        'Custom domain',
+        'Lifetime Editing',
+        'Priority Support'
       ]
     }
   ];
 
   return (
-    <section id="precos" className="py-32 px-6 bg-gradient-to-b from-transparent to-[var(--bg-section)]/50">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-4xl md:text-5xl font-black mb-4">
-            <span className="text-[var(--text)]">Escolha o seu</span>{' '}
-            <span className="text-[var(--primary)]">nível de amor</span>
-          </h2>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Planos que cabem no bolso, memórias que não têm preço.
-          </p>
-        </motion.div>
-        
         <div className="grid md:grid-cols-3 gap-8">
           {tiers.map((tier, index) => (
             <PricingCard key={tier.name} tier={tier} index={index} />
           ))}
         </div>
-      </div>
-    </section>
   );
 }
 

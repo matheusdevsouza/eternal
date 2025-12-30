@@ -21,7 +21,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCardAnimation } from './DemoCardAnimator';
 import { useDemo } from './DemoContext';
-import { Icons } from '../Icons';
+import { Icons } from '../ui/Icons';
 
 /**
  * Interface de propriedades compartilhada por todos os componentes de demo
@@ -367,7 +367,7 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
   const cardRef = useCardAnimation('photos', isPreview);
   const isInPreview = previewCard === 'photos';
 
-  const demoPhotos = ['Foto 1.jpg', 'Foto 2.jpg', 'Foto 3.jpg', 'Foto 4.jpg', 'Foto 5.jpg'];
+  const demoPhotos = ['Photo 1.jpg', 'Photo 2.jpg', 'Photo 3.jpg', 'Photo 4.jpg', 'Photo 5.jpg'];
 
   const handleStart = () => {
     if (isPreview) {
@@ -412,8 +412,8 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
       cardId="photos"
       number="1"
       icon={<Icons.Camera />}
-      title="Adicionar Fotos"
-      description="Armazenamento ilimitado de fotos"
+      title="Add Photos"
+      description="Unlimited photo storage"
       isPreview={isPreview}
       cardReady={cardReady}
       onClose={onClose}
@@ -428,7 +428,7 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
           >
             <Icons.Sparkles className="w-4 h-4 inline mr-2" />
-            Iniciar Demo
+            Start Demo
           </button>
         )}
 
@@ -459,7 +459,7 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
               {step === 'uploading' && (
                 <div className="flex items-center gap-2 text-xs mt-3" style={{ color: 'var(--text-secondary)' }}>
                   <Loader2Icon className="w-3 h-3 animate-spin" />
-                  <span>Fazendo upload...</span>
+                  <span>Uploading...</span>
                 </div>
               )}
             </div>
@@ -475,10 +475,10 @@ export const PhotosDemo = ({ isPreview = false, cardReady = false, onClose }: De
                 <div className="flex items-start gap-2 md:gap-3">
                   <div className="w-2 h-2 rounded-full mt-1.5 animate-pulse flex-shrink-0" style={{ background: 'var(--primary)' }}></div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>IA:</div>
+                    <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>AI:</div>
                     <div className="text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
                       <Typewriter 
-                        text="Fotos adicionadas ao álbum! Que momentos especiais vocês compartilham! Sinta-se à vontade para remover, substituir ou adicionar mais fotos quando quiser. ✨"
+                        text="Photos added to the album! What special moments you share! Feel free to remove, replace, or add more photos whenever you want. ✨"
                         speed={30}
                       />
                     </div>
@@ -571,8 +571,8 @@ export const MusicDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       <LockedDemoCard
         number="2"
         icon={<Icons.Music />}
-        title="Sugestões de Músicas"
-        description="Complete a demo anterior para desbloquear"
+        title="Music Suggestions"
+        description="Complete previous demo to unlock"
       />
     );
   }
@@ -587,8 +587,8 @@ export const MusicDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       cardId="music"
       number="2"
       icon={<Icons.Music />}
-      title="Sugestões de Músicas"
-      description="Crie a trilha sonora perfeita"
+      title="Music Suggestions"
+      description="Create the perfect soundtrack"
       isPreview={isPreview}
       cardReady={cardReady}
       onClose={onClose}
@@ -603,7 +603,7 @@ export const MusicDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
           >
             <Icons.Sparkles className="w-4 h-4 inline mr-2" />
-            Adicionar Trilha Sonora
+            Add Soundtrack
           </button>
         )}
 
@@ -640,7 +640,7 @@ export const MusicDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
               {step === 'adding' && (
                 <div className="flex items-center gap-2 text-xs mt-3" style={{ color: 'var(--text-secondary)' }}>
                   <Loader2Icon className="w-3 h-3 animate-spin" />
-                  <span>Analisando suas fotos...</span>
+                  <span>Analyzing your photos...</span>
                 </div>
               )}
             </div>
@@ -656,10 +656,10 @@ export const MusicDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full mt-1.5 animate-pulse flex-shrink-0" style={{ background: 'var(--primary)' }}></div>
                   <div className="flex-1">
-                    <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>IA:</div>
+                    <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>AI:</div>
                     <div className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
                       <Typewriter 
-                        text="Perfeito! Baseado nas fotos do seu álbum, sugeri músicas românticas que combinam com a energia do casal. Vocês podem adicionar, remover ou trocar qualquer uma! 🎵"
+                        text="Perfect! Based on your album photos, I suggested romantic songs that match your couple's energy. You can add, remove, or swap any of them! 🎵"
                         speed={30}
                       />
                     </div>
@@ -699,8 +699,8 @@ export const LetterDemo = ({ isPreview = false, cardReady = false, onClose }: De
   const cardRef = useCardAnimation('letter', isPreview);
   const isInPreview = previewCard === 'letter';
 
-  const userRequest = 'IA, escreva uma carta de amor especial falando sobre as fotos do nosso álbum 💕';
-  const letterText = 'Meu amor, cada foto do nosso álbum conta uma história única e especial. Desde o primeiro encontro até os momentos mais recentes, você trouxe cores e alegria para minha vida. Nossas músicas favoritas ecoam os batimentos do nosso coração, e cada lembrança é um tesouro que guardarei eternamente. Este presente é uma pequena forma de expressar o amor infinito que sinto por você. Te amo hoje, amanhã e sempre. ❤️';
+  const userRequest = 'AI, write a special love letter talking about our album photos 💕';
+  const letterText = 'My love, every photo in our album tells a unique and special story. From our first date to the most recent moments, you\'ve brought color and joy to my life. Our favorite songs echo the beats of our hearts, and every memory is a treasure I will keep forever. This gift is a small way to express the infinite love I feel for you. I love you today, tomorrow, and always. ❤️';
 
   useEffect(() => {
     if (unlockedFeatures.has('letter')) {
@@ -748,8 +748,8 @@ export const LetterDemo = ({ isPreview = false, cardReady = false, onClose }: De
       <LockedDemoCard
         number="3"
         icon={<Icons.Heart />}
-        title="Carta de Amor"
-        description="Complete a demo anterior para desbloquear"
+        title="Love Letter"
+        description="Complete previous demo to unlock"
       />
     );
   }
@@ -764,8 +764,8 @@ export const LetterDemo = ({ isPreview = false, cardReady = false, onClose }: De
       cardId="letter"
       number="3"
       icon={<Icons.Heart />}
-      title="Carta de Amor"
-      description="IA escreve por você"
+      title="Love Letter"
+      description="AI writes for you"
       isPreview={isPreview}
       cardReady={cardReady}
       onClose={onClose}
@@ -780,7 +780,7 @@ export const LetterDemo = ({ isPreview = false, cardReady = false, onClose }: De
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
           >
             <Icons.Sparkles className="w-4 h-4 inline mr-2" />
-            Pedir à IA
+            Ask AI
           </button>
         )}
 
@@ -797,7 +797,7 @@ export const LetterDemo = ({ isPreview = false, cardReady = false, onClose }: De
                 justifyContent: 'flex-start'
               }}
             >
-              <div className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>Você:</div>
+              <div className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>You:</div>
               <div className="text-sm flex-1 overflow-hidden" style={{ color: 'var(--text)' }}>
                 {step === 'user_requesting' ? <Typewriter text={userRequest} speed={30} /> : userRequest}
               </div>
@@ -814,7 +814,7 @@ export const LetterDemo = ({ isPreview = false, cardReady = false, onClose }: De
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full mt-1.5 animate-pulse flex-shrink-0" style={{ background: 'var(--primary)' }}></div>
                   <div className="flex-1">
-                    <div className="text-xs font-semibold mb-2" style={{ color: 'var(--primary)' }}>IA:</div>
+                    <div className="text-xs font-semibold mb-2" style={{ color: 'var(--primary)' }}>AI:</div>
                     <div className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
                       {step === 'writing' ? <Typewriter text={letterText} speed={30} /> : letterText}
                     </div>
@@ -863,13 +863,13 @@ export const ThemeDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
   const isInPreview = previewCard === 'theme';
 
   const themes = [
-    { name: 'Romântico', colors: ['#FF3366', '#FDA4AF', '#FFB6C1'] },
-    { name: 'Elegante', colors: ['#1A1A2E', '#C5A880', '#F4E4C1'] },
-    { name: 'Moderno', colors: ['#6C63FF', '#00D4FF', '#F0F0F0'] },
-    { name: 'Clássico', colors: ['#8B4513', '#D4AF37', '#F5F5DC'] }
+    { name: 'Romantic', colors: ['#FF3366', '#FDA4AF', '#FFB6C1'] },
+    { name: 'Elegant', colors: ['#1A1A2E', '#C5A880', '#F4E4C1'] },
+    { name: 'Modern', colors: ['#6C63FF', '#00D4FF', '#F0F0F0'] },
+    { name: 'Classic', colors: ['#8B4513', '#D4AF37', '#F5F5DC'] }
   ];
 
-  const aiMessage = "Perfeito! Agora escolha um tema visual que represente a personalidade da página que você quer criar para seu amor. Cada tema tem sua própria paleta de cores e estilo único! ✨";
+  const aiMessage = "Perfect! Now choose a visual theme that represents the personality of the page you want to create for your love. Each theme has its own color palette and unique style! ✨";
 
   useEffect(() => {
     if (unlockedFeatures.has('theme')) {
@@ -926,8 +926,8 @@ export const ThemeDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       <LockedDemoCard
         number="4"
         icon={<Icons.Sparkles />}
-        title="Escolher Tema"
-        description="Complete a demo anterior para desbloquear"
+        title="Choose Theme"
+        description="Complete previous demo to unlock"
       />
     );
   }
@@ -942,8 +942,8 @@ export const ThemeDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       cardId="theme"
       number="4"
       icon={<Icons.Sparkles />}
-      title="Escolher Tema"
-      description="Personalize o visual"
+      title="Choose Theme"
+      description="Customize the look"
       isPreview={isPreview}
       cardReady={cardReady}
       onClose={onClose}
@@ -958,7 +958,7 @@ export const ThemeDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
           >
             <Icons.Sparkles className="w-4 h-4 inline mr-2" />
-            Escolher Tema
+            Choose Theme
           </button>
         )}
 
@@ -1032,7 +1032,7 @@ export const ThemeDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
             {step === 'selecting' && (
               <div className="flex items-center gap-2 text-xs mt-3" style={{ color: 'var(--text-secondary)' }}>
                 <Loader2Icon className="w-3 h-3 animate-spin" />
-                <span>Analisando temas...</span>
+                <span>Analyzing themes...</span>
               </div>
             )}
           </div>
@@ -1109,8 +1109,8 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
       <LockedDemoCard
         number="5"
         icon={<Icons.QRCode />}
-        title="Gerar QR Code"
-        description="Complete a demo anterior para desbloquear"
+        title="Generate QR Code"
+        description="Complete previous demo to unlock"
       />
     );
   }
@@ -1125,8 +1125,8 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
       cardId="qrcode"
       number="5"
       icon={<Icons.QRCode />}
-      title="Gerar QR Code"
-      description="Compartilhe facilmente"
+      title="Generate QR Code"
+      description="Share easily"
       isPreview={isPreview}
       cardReady={cardReady}
       onClose={onClose}
@@ -1141,7 +1141,7 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
           >
             <Icons.Sparkles className="w-4 h-4 inline mr-2" />
-            Gerar QR Code
+            Generate QR Code
           </button>
         )}
 
@@ -1151,7 +1151,7 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
               <Loader2Icon className="w-10 h-10 md:w-12 md:h-12 animate-spin" />
             </div>
             <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
-              Gerando QR Code...
+              Generating QR Code...
             </span>
           </div>
         )}
@@ -1175,11 +1175,11 @@ export const QRCodeDemo = ({ isPreview = false, cardReady = false, onClose }: De
             <div className="flex items-center gap-2">
               <Icons.Check className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
               <span className="text-xs md:text-sm font-semibold" style={{ color: 'var(--text)' }}>
-                QR Code gerado com sucesso!
+                QR Code generated successfully!
               </span>
             </div>
             <div className="text-xs text-center max-w-[200px] px-2" style={{ color: 'var(--text-secondary)' }}>
-              Escaneie para acessar seu presente eterno
+              Scan to access your eternal gift
             </div>
           </div>
         )}
@@ -1270,8 +1270,8 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
   }, [startDate]);
 
   const aiMessage = calculatedTime 
-    ? `Que lindo! Vocês estão juntos há ${calculatedTime.years} ${calculatedTime.years === 1 ? 'ano' : 'anos'}, ${calculatedTime.months} ${calculatedTime.months === 1 ? 'mês' : 'meses'}, ${calculatedTime.days} ${calculatedTime.days === 1 ? 'dia' : 'dias'} e ${calculatedTime.hours} ${calculatedTime.hours === 1 ? 'hora' : 'horas'}! Um contador em tempo real será adicionado à sua página para celebrar cada momento juntos. 💕`
-    : "Que lindo! Um contador em tempo real será adicionado à sua página para celebrar cada momento juntos. 💕";
+    ? `How beautiful! You have been together for ${calculatedTime.years} ${calculatedTime.years === 1 ? 'year' : 'years'}, ${calculatedTime.months} ${calculatedTime.months === 1 ? 'month' : 'months'}, ${calculatedTime.days} ${calculatedTime.days === 1 ? 'day' : 'days'} and ${calculatedTime.hours} ${calculatedTime.hours === 1 ? 'hour' : 'hours'}! A real-time counter will be added to your page to celebrate every moment together. 💕`
+    : "How beautiful! A real-time counter will be added to your page to celebrate every moment together. 💕";
 
   useEffect(() => {
     if (unlockedFeatures.has('share')) {
@@ -1303,10 +1303,10 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
     if (step === 'calculating' && calculatedTime) {
       setTimeUnits([]);
       const finalTimeUnits = [
-        { value: calculatedTime.years, label: 'Anos' },
-        { value: calculatedTime.months, label: 'Meses' },
-        { value: calculatedTime.days, label: 'Dias' },
-        { value: calculatedTime.hours, label: 'Horas' }
+        { value: calculatedTime.years, label: 'Years' },
+        { value: calculatedTime.months, label: 'Months' },
+        { value: calculatedTime.days, label: 'Days' },
+        { value: calculatedTime.hours, label: 'Hours' }
       ];
       
       let index = 0;
@@ -1341,8 +1341,8 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       <LockedDemoCard
         number="6"
         icon={<Icons.Heart />}
-        title="Contador de Tempo"
-        description="Complete a demo anterior para desbloquear"
+        title="Time Counter"
+        description="Complete previous demo to unlock"
       />
     );
   }
@@ -1357,8 +1357,8 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
       cardId="share"
       number="6"
       icon={<Icons.Heart />}
-      title="Contador de Tempo"
-      description="Calcule o tempo juntos"
+      title="Time Counter"
+      description="Calculate time together"
       isPreview={isPreview}
       cardReady={cardReady}
       onClose={onClose}
@@ -1373,7 +1373,7 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
             onMouseLeave={(e) => e.currentTarget.style.background = 'var(--primary)'}
           >
             <Icons.Sparkles className="w-4 h-4 inline mr-2" />
-            Configurar Contador
+            Configure Counter
           </button>
         )}
 
@@ -1389,7 +1389,7 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
               <div className="space-y-3">
                 <div>
                   <label className="text-xs font-semibold mb-1 block" style={{ color: 'var(--text-secondary)' }}>
-                    Data de Início do Relacionamento
+                    Relationship Start Date
                   </label>
                   <input
                     type="date"
@@ -1407,7 +1407,7 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
                 {step === 'filling' && (
                   <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
                     <Loader2Icon className="w-3 h-3 animate-spin" />
-                    <span>Preenchendo...</span>
+                    <span>Filling...</span>
                   </div>
                 )}
               </div>
@@ -1424,7 +1424,7 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
                 >
                   <div className="text-center mb-3 md:mb-4">
                     <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>
-                      Tempo Juntos
+                      Time Together
                     </div>
                     <div className="text-xl md:text-2xl font-black mb-1" style={{ color: 'var(--primary)' }}>
                       ∞
@@ -1457,7 +1457,7 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
                   {step === 'calculating' && (
                     <div className="flex items-center justify-center gap-2 text-xs mt-4" style={{ color: 'var(--text-secondary)' }}>
                       <Loader2Icon className="w-3 h-3 animate-spin" />
-                      <span>Calculando...</span>
+                      <span>Calculating...</span>
                     </div>
                   )}
                 </div>
@@ -1473,7 +1473,7 @@ export const ShareDemo = ({ isPreview = false, cardReady = false, onClose }: Dem
                     <div className="flex items-start gap-3">
                       <div className="w-2 h-2 rounded-full mt-1.5 animate-pulse flex-shrink-0" style={{ background: 'var(--primary)' }}></div>
                       <div className="flex-1">
-                        <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>IA:</div>
+                        <div className="text-xs font-semibold mb-1" style={{ color: 'var(--primary)' }}>AI:</div>
                         <div className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
                           <Typewriter 
                             text={aiMessage}

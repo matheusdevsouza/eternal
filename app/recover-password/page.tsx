@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 export default function RecuperarSenhaPage() {
   const [email, setEmail] = useState('');
@@ -31,10 +31,10 @@ export default function RecuperarSenhaPage() {
       if (response.ok) {
         setSuccess(true);
       } else {
-        setError(data.error || 'Erro ao enviar email');
+        setError(data.error || 'Error sending email');
       }
     } catch (err) {
-      setError('Erro ao conectar com o servidor');
+      setError('Error connecting to server');
     } finally {
       setLoading(false);
     }
@@ -61,9 +61,9 @@ export default function RecuperarSenhaPage() {
                 className="h-12 w-auto mx-auto"
               />
             </Link>
-            <h1 className="text-3xl font-bold mb-2">Recuperar Senha</h1>
+            <h1 className="text-3xl font-bold mb-2">Recover Password</h1>
             <p className="text-[var(--text-secondary)]">
-              Digite seu email e enviaremos instruções para redefinir sua senha
+              Enter your email and we will send instructions to reset your password
             </p>
           </div>
 
@@ -74,15 +74,15 @@ export default function RecuperarSenhaPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-lg font-bold mb-2 text-green-900 dark:text-green-100">Email enviado!</h3>
+              <h3 className="text-lg font-bold mb-2 text-green-900 dark:text-green-100">Email sent!</h3>
               <p className="text-sm text-green-700 dark:text-green-300 mb-4">
-                Se este email estiver cadastrado, você receberá instruções para redefinir sua senha.
+                If this email is registered, you will receive instructions to reset your password.
               </p>
               <Link
                 href="/login"
                 className="inline-block text-sm text-[var(--primary)] hover:underline"
               >
-                Voltar para login
+                Back to login
               </Link>
             </div>
           ) : (
@@ -95,7 +95,7 @@ export default function RecuperarSenhaPage() {
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  E-mail
+                  Email
                 </label>
                 <input
                   id="email"
@@ -104,7 +104,7 @@ export default function RecuperarSenhaPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] transition-all text-[var(--text)]"
-                  placeholder="seu@email.com"
+                  placeholder="your@email.com"
                 />
               </div>
 
@@ -113,7 +113,7 @@ export default function RecuperarSenhaPage() {
                 disabled={loading}
                 className="w-full py-4 bg-[var(--primary)] hover:opacity-90 text-white font-bold rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Enviando...' : 'Enviar Instruções'}
+                {loading ? 'Sending...' : 'Send Instructions'}
               </button>
 
               <div className="text-center">
@@ -121,7 +121,7 @@ export default function RecuperarSenhaPage() {
                   href="/login"
                   className="text-sm text-[var(--primary)] hover:underline"
                 >
-                  Voltar para login
+                  Back to login
                 </Link>
               </div>
             </form>
