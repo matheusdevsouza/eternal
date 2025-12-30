@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
-import { ThemeWrapper } from "@/components/ThemeWrapper";
+import SmoothScroll from "@/components/layout/SmoothScroll";
+import { ThemeWrapper } from "@/components/layout/ThemeWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Eternal Gift - Presentes Digitais que Não Envelhecem",
-  description: "Crie um santuário digital para os seus momentos. Adicione fotos, músicas e cartas em um link eterno para surpreender quem você ama.",
+  title: "Eternal Gift - Timeless Digital Gifts",
+  description: "Create a digital sanctuary for your moments. Add photos, music, and letters in an eternal link to surprise your loved ones.",
   icons: {
     icon: [
       { url: '/logo.png', type: 'image/png' }
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <head>
         <script
           dangerouslySetInnerHTML={{

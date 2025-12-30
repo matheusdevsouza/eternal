@@ -4,8 +4,21 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import Settings from './Settings';
+import Settings from '../ui/Settings';
 
+/**
+ * Estrutura de item de navegação.
+ * Define links simples, ações ou submenus.
+ * 
+ * @interface NavItem
+ * @property {string} label - Texto visível do link
+ * @property {string} [href] - URL de destino (opcional se tiver submenu ou onClick)
+ * @property {Function} [onClick] - Ação personalizada ao clicar
+ * @property {Array} [submenu] - Lista de itens para dropdown
+ * @property {string} submenu.label - Texto do subitem
+ * @property {string} submenu.href - Link do subitem
+ * @property {string} [submenu.description] - Descrição curta para o subitem
+ */
 interface NavItem {
   label: string;
   href?: string;
@@ -13,6 +26,21 @@ interface NavItem {
   submenu?: { label: string; href: string; description?: string }[];
 }
 
+/**
+ * Navbar Component
+ * 
+ * Barra de navegação principal da aplicação.
+ * Responsável pela navegação global, menu mobile e ações principais.
+ * 
+ * Funcionalidades:
+ * - Navegação desktop com dropdowns
+ * - Menu mobile adaptativo (fullscreen)
+ * - Navegação suave (scroll) para seções
+ * - Integração com Settings
+ * 
+ * @component
+ * @module components/layout/Navbar
+ */
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,36 +53,37 @@ export default function Navbar() {
 
   const navItems: NavItem[] = [
     {
-      label: 'Início',
+      label: 'Home',
+      href: '/',
       onClick: () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setMobileMenuOpen(false);
       }
     },
     {
-      label: 'Como Funciona',
+      label: 'How It Works',
       submenu: [
-        { label: 'Passo a Passo', href: '/como-funciona', description: 'Veja como criar seu presente' },
-        { label: 'Recursos', href: '/recursos', description: 'Todas as funcionalidades' },
-        { label: 'FAQ', href: '/faq', description: 'Perguntas frequentes' }
+        { label: 'Step by Step', href: '/how-it-works', description: 'See how to create your gift' },
+        { label: 'Features', href: '/features', description: 'All features' },
+        { label: 'FAQ', href: '/faq', description: 'Frequently asked questions' }
       ]
     },
     {
-      label: 'Preços',
-      href: '/precos'
+      label: 'Pricing',
+      href: '/pricing'
     },
     {
       label: 'Blog',
       submenu: [
-        { label: 'Artigos', href: '/blog', description: 'Últimas publicações' },
-        { label: 'Dicas de Presentes', href: '/blog/dicas', description: 'Ideias criativas' }
+        { label: 'Articles', href: '/blog', description: 'Latest posts' },
+        { label: 'Gift Tips', href: '/blog/tips', description: 'Creative ideas' }
       ]
     },
     {
-      label: 'Suporte',
+      label: 'Support',
       submenu: [
-        { label: 'Central de Ajuda', href: '/suporte', description: 'Encontre respostas' },
-        { label: 'Contato', href: '/contato', description: 'Fale conosco' }
+        { label: 'Help Center', href: '/support', description: 'Find answers' },
+        { label: 'Contact', href: '/contact', description: 'Talk to us' }
       ]
     }
   ];
@@ -64,7 +93,7 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-[var(--navbar-bg)] backdrop-blur-xl border-b border-[var(--border)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+
           <Link href="/" className="flex items-center transition-all duration-300 hover:scale-110">
             <Image 
               src="/logo.png" 
@@ -77,7 +106,7 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
+
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <div
@@ -148,27 +177,27 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button & Mobile Menu */}
+
           <div className="flex items-center gap-3">
             <Link
               href="/login"
               className="hidden sm:block px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-full text-sm font-bold transition-all shadow-lg hover:scale-105 active:scale-95"
             >
-              Entrar
+              Sign In
             </Link>
             <Link
-              href="/como-funciona"
+              href="/how-it-works"
               className="hidden sm:block px-6 py-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-full text-sm font-bold transition-all"
             >
-              Ver Demo
+              View Demo
             </Link>
 
-            {/* Settings */}
+
             <div className="hidden sm:block">
               <Settings />
             </div>
 
-            {/* Mobile Menu Button */}
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors"
@@ -192,7 +221,7 @@ export default function Navbar() {
       </div>
     </nav>
 
-    {/* Mobile Menu - Fullscreen */}
+
     <AnimatePresence>
       {mobileMenuOpen && (
         <motion.div
@@ -275,14 +304,14 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block w-full px-6 py-4 bg-[var(--primary)] hover:opacity-90 text-white rounded-2xl text-base font-bold text-center transition-all shadow-lg"
               >
-                Entrar
+                Sign In
               </Link>
               <Link
-                href="/como-funciona"
+                href="/how-it-works"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block w-full px-6 py-4 bg-[var(--bg-card)] border-2 border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-2xl text-base font-bold text-center transition-all"
               >
-                Ver Demo
+                View Demo
               </Link>
               <div className="flex justify-center pt-4">
                 <Settings />

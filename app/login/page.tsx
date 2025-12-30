@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -39,14 +39,14 @@ export default function LoginPage() {
                 className="h-12 w-auto mx-auto"
               />
             </Link>
-            <h1 className="text-3xl font-bold mb-2">Bem-vindo de volta</h1>
-            <p className="text-[#FFF1F2]/60">Entre na sua conta para continuar</p>
+            <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
+            <p className="text-[#FFF1F2]/60">Sign in to your account to continue</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
-                E-mail
+                Email
               </label>
               <input
                 id="email"
@@ -55,17 +55,17 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="seu@email.com"
+                placeholder="your@email.com"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label htmlFor="password" className="block text-sm font-medium">
-                  Senha
+                  Password
                 </label>
-                <Link href="/recuperar-senha" className="text-sm text-[#FF3366] hover:text-[#FF4D7D] transition-colors">
-                  Esqueceu?
+                <Link href="/recover-password" className="text-sm text-[#FF3366] hover:text-[#FF4D7D] transition-colors">
+                  Forgot?
                 </Link>
               </div>
               <input
@@ -84,25 +84,25 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full py-4 bg-[#FF3366] hover:bg-[#FF4D7D] text-white font-bold rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-[#FFF1F2]/60">
-              Não tem uma conta?{' '}
-              <Link href="/registro" className="text-[#FF3366] hover:text-[#FF4D7D] font-medium transition-colors">
-                Criar conta
+              Don't have an account?{' '}
+              <Link href="/register" className="text-[#FF3366] hover:text-[#FF4D7D] font-medium transition-colors">
+                Create account
               </Link>
             </p>
           </div>
 
           <div className="mt-8 pt-8 border-t border-[#2D1318]">
             <div className="text-center text-sm text-[#FFF1F2]/40">
-              Ao entrar, você concorda com nossos{' '}
-              <Link href="/termos" className="text-[#FF3366] hover:underline">Termos de Uso</Link>
-              {' '}e{' '}
-              <Link href="/privacidade" className="text-[#FF3366] hover:underline">Política de Privacidade</Link>
+              By signing in, you agree to our{' '}
+              <Link href="/terms" className="text-[#FF3366] hover:underline">Terms of Use</Link>
+              {' '}and{' '}
+              <Link href="/privacy" className="text-[#FF3366] hover:underline">Privacy Policy</Link>
             </div>
           </div>
         </motion.div>

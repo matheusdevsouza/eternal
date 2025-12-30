@@ -5,8 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
@@ -27,13 +27,13 @@ function ResetPasswordContent() {
     setPasswordErrors([]);
 
     if (!token) {
-      setError('Token não encontrado');
+      setError('Token not found');
       setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('As senhas não coincidem');
+      setError('Passwords do not match');
       setLoading(false);
       return;
     }
@@ -53,13 +53,13 @@ function ResetPasswordContent() {
           router.push('/login');
         }, 3000);
       } else {
-        setError(data.error || 'Erro ao redefinir senha');
+        setError(data.error || 'Error resetting password');
         if (data.details) {
           setPasswordErrors(data.details);
         }
       }
     } catch (err) {
-      setError('Erro ao conectar com o servidor');
+      setError('Error connecting to server');
     } finally {
       setLoading(false);
     }
@@ -70,15 +70,15 @@ function ResetPasswordContent() {
       <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md text-center">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30 rounded-xl p-8">
-            <h2 className="text-2xl font-bold mb-2 text-red-900 dark:text-red-100">Token não encontrado</h2>
+            <h2 className="text-2xl font-bold mb-2 text-red-900 dark:text-red-100">Token not found</h2>
             <p className="text-red-700 dark:text-red-300 mb-6">
-              Link inválido ou expirado
+              Invalid or expired link
             </p>
             <Link
-              href="/recuperar-senha"
+              href="/recover-password"
               className="inline-block text-[var(--primary)] hover:underline font-medium"
             >
-              Solicitar novo link
+              Request new link
             </Link>
           </div>
         </div>
@@ -104,9 +104,9 @@ function ResetPasswordContent() {
               className="h-12 w-auto mx-auto"
             />
           </Link>
-          <h1 className="text-3xl font-bold mb-2">Redefinir Senha</h1>
+          <h1 className="text-3xl font-bold mb-2">Reset Password</h1>
           <p className="text-[var(--text-secondary)]">
-            Crie uma nova senha forte para sua conta
+            Create a new strong password for your account
           </p>
         </div>
 
@@ -117,12 +117,12 @@ function ResetPasswordContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold mb-2 text-green-900 dark:text-green-100">Senha redefinida!</h3>
+            <h3 className="text-lg font-bold mb-2 text-green-900 dark:text-green-100">Password reset!</h3>
             <p className="text-sm text-green-700 dark:text-green-300 mb-2">
-              Sua senha foi alterada com sucesso.
+              Your password has been changed successfully.
             </p>
             <p className="text-xs text-green-600 dark:text-green-400">
-              Redirecionando para o login...
+              Redirecting to login...
             </p>
           </div>
         ) : (
@@ -142,7 +142,7 @@ function ResetPasswordContent() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
-                Nova Senha
+                New Password
               </label>
               <input
                 id="password"
@@ -152,13 +152,13 @@ function ResetPasswordContent() {
                 required
                 minLength={8}
                 className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] transition-all text-[var(--text)]"
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Minimum 8 characters"
               />
             </div>
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-                Confirmar Nova Senha
+                Confirm New Password
               </label>
               <input
                 id="confirmPassword"
@@ -167,18 +167,18 @@ function ResetPasswordContent() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] transition-all text-[var(--text)]"
-                placeholder="Digite novamente"
+                placeholder="Type again"
               />
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900/30 rounded-xl p-4">
-              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-2">Requisitos da senha:</p>
+              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-2">Password requirements:</p>
               <ul className="text-xs text-blue-600 dark:text-blue-400 space-y-1">
-                <li>• Mínimo 8 caracteres</li>
-                <li>• Uma letra maiúscula</li>
-                <li>• Uma letra minúscula</li>
-                <li>• Um número</li>
-                <li>• Um caractere especial (@$!%*?&)</li>
+                <li>• Minimum 8 characters</li>
+                <li>• One uppercase letter</li>
+                <li>• One lowercase letter</li>
+                <li>• One number</li>
+                <li>• One special character (@$!%*?&)</li>
               </ul>
             </div>
 
@@ -187,7 +187,7 @@ function ResetPasswordContent() {
               disabled={loading}
               className="w-full py-4 bg-[var(--primary)] hover:opacity-90 text-white font-bold rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Redefinindo...' : 'Redefinir Senha'}
+              {loading ? 'Resetting...' : 'Reset Password'}
             </button>
           </form>
         )}

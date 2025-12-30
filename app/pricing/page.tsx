@@ -8,36 +8,16 @@ import { Icons } from '@/components/ui/Icons';
 import FAQ from '@/components/sections/FAQ';
 import Pricing from '@/components/sections/Pricing';
 
-/**
- * PrecosPage Component
- * 
- * Página de preços da aplicação Eternal.
- * Apresenta os planos disponíveis, benefícios, garantias e perguntas frequentes.
- * 
- * Seções:
- * 1. Hero: Introdução e título
- * 2. Pricing: Cards de planos (importado)
- * 3. Benefits: Grid de benefícios/garantias
- * 4. FAQ: Perguntas frequentes (importado)
- * 5. CTA: Chamada para ação final
- * 
- * @module app/precos/page
- * @requires components/layout/Navbar
- * @requires components/sections/Pricing
- * @requires components/sections/FAQ
- */
-
 export default function PrecosPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)] overflow-x-hidden transition-colors duration-300">
       <Navbar />
       
-
-      <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden pt-20">
+      <section className="relative py-32 md:py-40 flex items-center justify-center px-6 overflow-hidden">
 
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] rounded-full blur-[120px] -z-10" style={{ background: 'var(--hero-gradient)' }} />
         
-        <div className="max-w-4xl mx-auto text-center w-full">
+        <div className="max-w-6xl mx-auto text-center w-full">
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
@@ -67,7 +47,7 @@ export default function PrecosPage() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
-            className="text-lg md:text-xl text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto"
+            className="text-lg md:text-xl text-[var(--text-secondary)] mb-2 max-w-2xl mx-auto"
           >
             Affordable plans, priceless memories. Choose the perfect plan for your needs.
           </motion.p>
@@ -75,7 +55,7 @@ export default function PrecosPage() {
       </section>
 
 
-      <section className="py-16 px-6 bg-gradient-to-b from-transparent to-[var(--bg-section)]/50 -mt-32 relative z-10">
+      <section className="py-16 px-6 bg-gradient-to-b from-transparent to-[var(--bg-section)]/50 relative z-10">
         <div className="max-w-7xl mx-auto">
           <Pricing />
         </div>

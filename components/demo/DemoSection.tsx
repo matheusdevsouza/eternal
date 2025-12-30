@@ -90,12 +90,12 @@ export default function DemoSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-black mb-4">
-            <span className="text-[var(--text)]">Experimente a</span>{' '}
-            <span className="text-[var(--primary)]">Magia</span>
+            <span className="text-[var(--text)]">Experience the</span>{' '}
+            <span className="text-[var(--primary)]">Magic</span>
           </h2>
           <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Veja como é fácil criar um presente digital inesquecível. 
-            Clique em cada card para ver a demonstração interativa.
+            See how easy it is to create an unforgettable digital gift. 
+            Click on each card to see the interactive demo.
           </p>
         </motion.div>
 

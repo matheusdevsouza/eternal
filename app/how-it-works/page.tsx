@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import CTA from '@/components/CTA';
-import { Icons } from '@/components/Icons';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import CTA from '@/components/sections/CTA';
+import { Icons } from '@/components/ui/Icons';
 import { DemoProvider } from '@/components/demo/DemoContext';
 import { DemoPreview } from '@/components/demo/DemoPreview';
 import { PhotosDemo, MusicDemo, LetterDemo, ThemeDemo, QRCodeDemo, ShareDemo } from '@/components/demo/DemoCards';
@@ -61,13 +61,13 @@ export default function ComoFuncionaPage() {
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)] overflow-x-hidden transition-colors duration-300">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden pt-20">
-        {/* Gradient Background */}
+
+      <section className="relative py-32 md:py-40 flex items-center justify-center px-6 overflow-hidden">
+
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] rounded-full blur-[120px] -z-10" style={{ background: 'var(--hero-gradient)' }} />
         
-        <div className="max-w-4xl mx-auto text-center w-full">
-          {/* Badge */}
+        <div className="max-w-6xl mx-auto text-center w-full">
+
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }}
@@ -75,36 +75,36 @@ export default function ComoFuncionaPage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--badge-bg)] border border-[var(--badge-border)] text-[var(--badge-text)] text-xs font-bold mb-8"
           >
             <Icons.Sparkles className="w-3 h-3" />
-            SIMPLES E INTUITIVO
+            SIMPLE AND INTUITIVE
           </motion.div>
 
-          {/* Title */}
+
           <motion.h1 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" }}
             className="text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-[var(--text)]"
           >
-            Veja nossa <br /> 
+            Watch our <br /> 
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]">
-              demonstração.
+              demo.
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
+
           <motion.p 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
-            className="text-lg md:text-xl text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto"
+            className="text-lg md:text-xl text-[var(--text-secondary)] mb-2 max-w-2xl mx-auto"
           >
-            Explore agora algumas de nossas funcionalidades em nossa demonstração interativa.
+            Explore some of our features now in our interactive demo.
           </motion.p>
         </div>
       </section>
 
-      {/* Demo Section */}
-      <section className="py-16 px-6 bg-gradient-to-b from-transparent to-[var(--bg-section)]/50 -mt-32 relative z-10">
+
+      <section className="py-16 px-6 bg-gradient-to-b from-transparent to-[var(--bg-section)]/50 relative z-10">
         <div className="max-w-7xl mx-auto">
           <DemoProvider>
             <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 items-start">
@@ -131,7 +131,7 @@ export default function ComoFuncionaPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+
       <CTA />
       
       <Footer />

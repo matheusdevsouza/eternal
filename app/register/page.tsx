@@ -4,9 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { ToastContainer, toast } from '@/components/Toast';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { ToastContainer, toast } from '@/components/ui/Toast';
 
 export default function RegistroPage() {
   const [formData, setFormData] = useState({
@@ -31,12 +31,12 @@ export default function RegistroPage() {
     // Validações básicas
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error('As senhas não coincidem');
+      toast.error('Passwords do not match');
       return;
     }
     
     if (!acceptTerms) {
-      toast.warning('Você precisa aceitar os termos de uso');
+      toast.warning('You must accept the terms of use');
       return;
     }
     
@@ -59,20 +59,20 @@ export default function RegistroPage() {
       
       if (!response.ok) {
 
-        toast.error(data.error || 'Erro ao criar conta');
+        toast.error(data.error || 'Error creating account');
         setLoading(false);
         return;
       }
 
-      toast.success(data.message || 'Conta criada com sucesso!');
+      toast.success(data.message || 'Account created successfully!');
 
       setTimeout(() => {
         window.location.href = '/login';
       }, 1500);
       
     } catch (error) {
-      console.error('Erro ao criar conta:', error);
-      toast.error('Erro ao criar conta. Verifique sua conexão e tente novamente.');
+      console.error('Error creating account:', error);
+      toast.error('Error creating account. Check your connection and try again.');
       setLoading(false);
     }
   };
@@ -99,14 +99,14 @@ export default function RegistroPage() {
                 className="h-12 w-auto mx-auto"
               />
             </Link>
-            <h1 className="text-3xl font-bold mb-2">Criar sua conta</h1>
-            <p className="text-[#FFF1F2]/60">Comece a criar presentes inesquecíveis</p>
+            <h1 className="text-3xl font-bold mb-2">Create your account</h1>
+            <p className="text-[#FFF1F2]/60">Start creating unforgettable gifts</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">
-                Nome completo
+                Full name
               </label>
               <input
                 id="name"
@@ -116,13 +116,13 @@ export default function RegistroPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="Seu nome"
+                placeholder="Your name"
               />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
-                E-mail
+                Email
               </label>
               <input
                 id="email"
@@ -132,13 +132,13 @@ export default function RegistroPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="seu@email.com"
+                placeholder="your@email.com"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
-                Senha
+                Password
               </label>
               <input
                 id="password"
@@ -149,13 +149,13 @@ export default function RegistroPage() {
                 required
                 minLength={8}
                 className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Minimum 8 characters"
               />
             </div>
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-                Confirmar senha
+                Confirm password
               </label>
               <input
                 id="confirmPassword"
@@ -165,7 +165,7 @@ export default function RegistroPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="Digite novamente"
+                placeholder="Type again"
               />
             </div>
 
@@ -179,10 +179,10 @@ export default function RegistroPage() {
                 className="mt-1 w-4 h-4 rounded border-[#2D1318] bg-[#1A0B0E] text-[#FF3366] focus:ring-[#FF3366] focus:ring-offset-0"
               />
               <label htmlFor="terms" className="text-sm text-[#FFF1F2]/60">
-                Eu concordo com os{' '}
-                <Link href="/termos" className="text-[#FF3366] hover:underline">Termos de Uso</Link>
-                {' '}e{' '}
-                <Link href="/privacidade" className="text-[#FF3366] hover:underline">Política de Privacidade</Link>
+                I agree to the{' '}
+                <Link href="/terms" className="text-[#FF3366] hover:underline">Terms of Use</Link>
+                {' '}and{' '}
+                <Link href="/privacy" className="text-[#FF3366] hover:underline">Privacy Policy</Link>
               </label>
             </div>
 
@@ -191,15 +191,15 @@ export default function RegistroPage() {
               disabled={loading}
               className="w-full py-4 bg-[#FF3366] hover:bg-[#FF4D7D] text-white font-bold rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Criando conta...' : 'Criar conta'}
+              {loading ? 'Creating account...' : 'Create account'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-[#FFF1F2]/60">
-              Já tem uma conta?{' '}
+              Already have an account?{' '}
               <Link href="/login" className="text-[#FF3366] hover:text-[#FF4D7D] font-medium transition-colors">
-                Entrar
+                Sign In
               </Link>
             </p>
           </div>

@@ -3,6 +3,16 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+/**
+ * CTA (Call to Action) Component
+ * 
+ * Seção final de chamada para ação.
+ * Incentiva o usuário a converter (criar conta ou ver planos) antes do rodapé.
+ * Utiliza gradientes e padrões de fundo para destaque visual.
+ * 
+ * @component
+ * @module components/sections/CTA
+ */
 export default function CTA() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -11,7 +21,7 @@ export default function CTA() {
 
   return (
     <section className="py-32 px-6 relative overflow-hidden bg-gradient-to-br from-[var(--bg-deep)] via-[var(--bg-section)] to-[var(--bg-deep)]">
-      {/* Background pattern overlay */}
+
       <div
         className="absolute inset-0 opacity-5"
         style={{
@@ -29,25 +39,25 @@ export default function CTA() {
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
-            <span className="text-[var(--text)]">Pronto para criar seu</span>{" "}
-            <span className="text-[var(--primary)]">presente eterno?</span>
+            <span className="text-[var(--text)]">Ready to create your</span>{" "}
+            <span className="text-[var(--primary)]">eternal gift?</span>
           </h2>
           <p className="text-lg text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto">
-            Junte-se a milhares de casais que já transformaram seus momentos em
-            memórias digitais inesquecíveis
+            Join thousands of couples who have already transformed their moments into
+            unforgettable digital memories
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/precos"
+              href="/pricing"
               className="px-10 py-5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-bold rounded-2xl transition-all shadow-[0_0_40px_var(--shadow-color)] hover:scale-105 active:scale-95"
             >
-              Teste de Branch!
+              Start Now
             </Link>
             <Link
               href="/login"
               className="px-10 py-5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] text-[var(--text)] font-bold rounded-2xl transition-all"
             >
-              Já tenho conta
+              I already have an account
             </Link>
           </div>
         </motion.div>

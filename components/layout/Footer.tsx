@@ -1,32 +1,32 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Icons } from './Icons';
+import { Icons } from '../ui/Icons';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
     produto: [
-      { label: 'Como Funciona', href: '/como-funciona' },
-      { label: 'Recursos', href: '/recursos' },
-      { label: 'Preços', href: '/precos' }
+      { label: 'How It Works', href: '/how-it-works' },
+      { label: 'Features', href: '/features' },
+      { label: 'Pricing', href: '/pricing' }
     ],
     empresa: [
-      { label: 'Sobre Nós', href: '/sobre' },
+      { label: 'About Us', href: '/about' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Parceiros', href: '/parceiros' }
+      { label: 'Partners', href: '/partners' }
     ],
     recursos: [
-      { label: 'Central de Ajuda', href: '/suporte' },
+      { label: 'Help Center', href: '/support' },
       { label: 'FAQ', href: '/faq' },
-      { label: 'Comunidade', href: '/comunidade' },
+      { label: 'Community', href: '/community' },
       { label: 'Changelog', href: '/changelog' }
     ],
     legal: [
-      { label: 'Termos de Uso', href: '/termos' },
-      { label: 'Política de Privacidade', href: '/privacidade' },
-      { label: 'Política de Cookies', href: '/cookies' },
-      { label: 'RGPD', href: '/rgpd' },
+      { label: 'Terms of Use', href: '/terms' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Cookie Policy', href: '/cookies' },
+      { label: 'GDPR', href: '/gdpr' },
       { label: 'DMCA', href: '/dmca' }
     ]
   };
@@ -55,7 +55,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6 max-w-xs">
-              Crie presentes digitais eternos que celebram o amor. Transforme memórias em experiências inesquecíveis.
+              Create timeless digital gifts that celebrate love. Transform memories into unforgettable experiences.
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((social) => (
@@ -90,7 +90,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-bold text-[var(--text)] mb-4 uppercase tracking-wider">Produto</h3>
+            <h3 className="text-sm font-bold text-[var(--text)] mb-4 uppercase tracking-wider">Product</h3>
             <ul className="space-y-3">
               {footerLinks.produto.map((link) => (
                 <li key={link.label}>
@@ -106,7 +106,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-bold text-[var(--text)] mb-4 uppercase tracking-wider">Empresa</h3>
+            <h3 className="text-sm font-bold text-[var(--text)] mb-4 uppercase tracking-wider">Company</h3>
             <ul className="space-y-3">
               {footerLinks.empresa.map((link) => (
                 <li key={link.label}>
@@ -122,7 +122,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-bold text-[var(--text)] mb-4 uppercase tracking-wider">Recursos</h3>
+            <h3 className="text-sm font-bold text-[var(--text)] mb-4 uppercase tracking-wider">Resources</h3>
             <ul className="space-y-3">
               {footerLinks.recursos.map((link) => (
                 <li key={link.label}>
@@ -159,7 +159,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-[var(--text-secondary)] opacity-70">
-              © {currentYear} Eternal Gift. Todos os direitos reservados.
+              © {currentYear} Eternal Gift. All rights reserved.
             </p>
 
           </div>

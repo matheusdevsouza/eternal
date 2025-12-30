@@ -29,7 +29,7 @@ function createTransporter() {
 function getEmailTemplate(content: string): string {
   return `
     <!DOCTYPE html>
-    <html lang="pt-BR">
+    <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,8 +98,8 @@ function getEmailTemplate(content: string): string {
           ${content}
         </div>
         <div class="footer">
-          <p>Este é um email automático, por favor não responda.</p>
-          <p>© ${new Date().getFullYear()} Eternal Gift. Todos os direitos reservados.</p>
+          <p>This is an automated email, please do not reply.</p>
+          <p>© ${new Date().getFullYear()} Eternal Gift. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -115,25 +115,25 @@ export async function sendVerificationEmail(
   name: string,
   token: string
 ): Promise<void> {
-  const verificationUrl = `${SITE_URL}/verificar-email?token=${token}`;
+  const verificationUrl = `${SITE_URL}/verify-email?token=${token}`;
   
   const content = `
-    <h2>Olá, ${name}! 👋</h2>
-    <p>Obrigado por se cadastrar no Eternal Gift!</p>
-    <p>Para ativar sua conta e começar a criar presentes digitais inesquecíveis, clique no botão abaixo:</p>
+    <h2>Hello, ${name}! 👋</h2>
+    <p>Thank you for signing up for Eternal Gift!</p>
+    <p>To activate your account and start creating unforgettable digital gifts, click the button below:</p>
     <div style="text-align: center;">
-      <a href="${verificationUrl}" class="button">Verificar Minha Conta</a>
+      <a href="${verificationUrl}" class="button">Verify My Account</a>
     </div>
     <div class="divider"></div>
     <p style="font-size: 14px; color: #666;">
-      Se o botão não funcionar, copie e cole este link no seu navegador:<br>
+      If the button doesn't work, copy and paste this link into your browser:<br>
       <a href="${verificationUrl}" style="color: #FF3366;">${verificationUrl}</a>
     </p>
     <p style="font-size: 14px; color: #666;">
-      Este link expira em 24 horas.
+      This link expires in 24 hours.
     </p>
     <p style="font-size: 14px; color: #666;">
-      Se você não criou esta conta, por favor ignore este email.
+      If you didn't create this account, please ignore this email.
     </p>
   `;
 
@@ -142,7 +142,7 @@ export async function sendVerificationEmail(
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
-    subject: 'Verifique sua conta - Eternal Gift',
+    subject: 'Verify your account - Eternal Gift',
     html: getEmailTemplate(content),
   });
 }
@@ -155,25 +155,25 @@ export async function sendPasswordResetEmail(
   name: string,
   token: string
 ): Promise<void> {
-  const resetUrl = `${SITE_URL}/redefinir-senha?token=${token}`;
+  const resetUrl = `${SITE_URL}/reset-password?token=${token}`;
   
   const content = `
-    <h2>Olá, ${name}! 👋</h2>
-    <p>Recebemos uma solicitação para redefinir a senha da sua conta.</p>
-    <p>Se você fez esta solicitação, clique no botão abaixo para criar uma nova senha:</p>
+    <h2>Hello, ${name}! 👋</h2>
+    <p>We received a request to reset your account password.</p>
+    <p>If you made this request, click the button below to create a new password:</p>
     <div style="text-align: center;">
-      <a href="${resetUrl}" class="button">Redefinir Senha</a>
+      <a href="${resetUrl}" class="button">Reset Password</a>
     </div>
     <div class="divider"></div>
     <p style="font-size: 14px; color: #666;">
-      Se o botão não funcionar, copie e cole este link no seu navegador:<br>
+      If the button doesn't work, copy and paste this link into your browser:<br>
       <a href="${resetUrl}" style="color: #FF3366;">${resetUrl}</a>
     </p>
     <p style="font-size: 14px; color: #666;">
-      Este link expira em 1 hora por questões de segurança.
+      This link expires in 1 hour for security reasons.
     </p>
     <p style="font-size: 14px; color: #d32f2f;">
-      <strong>⚠️ Importante:</strong> Se você não solicitou esta alteração, ignore este email e sua senha permanecerá inalterada. Recomendamos que você altere sua senha imediatamente caso suspeite de acesso não autorizado.
+      <strong>⚠️ Important:</strong> If you didn't request this change, ignore this email and your password will remain unchanged. We recommend you change your password immediately if you suspect unauthorized access.
     </p>
   `;
 
@@ -182,7 +182,7 @@ export async function sendPasswordResetEmail(
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
-    subject: 'Redefinição de senha - Eternal Gift',
+    subject: 'Password Reset - Eternal Gift',
     html: getEmailTemplate(content),
   });
 }
@@ -195,23 +195,23 @@ export async function sendWelcomeEmail(
   name: string
 ): Promise<void> {
   const content = `
-    <h2>Bem-vindo ao Eternal Gift, ${name}! 🎉</h2>
-    <p>Sua conta foi verificada com sucesso!</p>
-    <p>Agora você pode começar a criar presentes digitais inesquecíveis para as pessoas que você ama.</p>
-    <h3>O que você pode fazer:</h3>
+    <h2>Welcome to Eternal Gift, ${name}! 🎉</h2>
+    <p>Your account has been successfully verified!</p>
+    <p>Now you can start creating unforgettable digital gifts for your loved ones.</p>
+    <h3>What you can do:</h3>
     <ul style="line-height: 2;">
-      <li>📸 Upload ilimitado de fotos</li>
-      <li>🎵 Adicionar trilha sonora personalizada</li>
-      <li>💌 Escrever cartas de amor eternas</li>
-      <li>🎨 Personalizar temas e fontes</li>
-      <li>📱 Gerar QR Code customizado</li>
-      <li>🔗 Compartilhar via link único</li>
+      <li>📸 Unlimited photo uploads</li>
+      <li>🎵 Add custom soundtrack</li>
+      <li>💌 Write eternal love letters</li>
+      <li>🎨 Customize themes and fonts</li>
+      <li>📱 Generate custom QR Code</li>
+      <li>🔗 Share via unique link</li>
     </ul>
     <div style="text-align: center;">
-      <a href="${SITE_URL}/dashboard" class="button">Criar Meu Primeiro Presente</a>
+      <a href="${SITE_URL}/dashboard" class="button">Create My First Gift</a>
     </div>
     <div class="divider"></div>
-    <p>Se precisar de ajuda, nossa equipe está sempre disponível!</p>
+    <p>If you need help, our team is always available!</p>
   `;
 
   const transporter = createTransporter();
@@ -219,7 +219,7 @@ export async function sendWelcomeEmail(
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
-    subject: 'Bem-vindo ao Eternal Gift! 🎁',
+    subject: 'Welcome to Eternal Gift! 🎁',
     html: getEmailTemplate(content),
   });
 }
@@ -232,15 +232,15 @@ export async function sendPasswordChangedEmail(
   name: string
 ): Promise<void> {
   const content = `
-    <h2>Olá, ${name}! 👋</h2>
-    <p>Sua senha foi alterada com sucesso.</p>
-    <p>Se você não fez esta alteração, entre em contato conosco imediatamente.</p>
+    <h2>Hello, ${name}! 👋</h2>
+    <p>Your password has been changed successfully.</p>
+    <p>If you didn't make this change, please contact us immediately.</p>
     <div style="text-align: center;">
-      <a href="${SITE_URL}/suporte" class="button">Reportar Problema</a>
+      <a href="${SITE_URL}/support" class="button">Report Problem</a>
     </div>
     <div class="divider"></div>
     <p style="font-size: 14px; color: #666;">
-      Por segurança, você foi desconectado de todas as suas sessões ativas.
+      For security, you have been logged out of all active sessions.
     </p>
   `;
 
@@ -249,7 +249,7 @@ export async function sendPasswordChangedEmail(
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
-    subject: 'Senha Alterada - Eternal Gift',
+    subject: 'Password Changed - Eternal Gift',
     html: getEmailTemplate(content),
   });
 }
@@ -263,20 +263,20 @@ export async function sendSecurityAlertEmail(
   details: string
 ): Promise<void> {
   const content = `
-    <h2>⚠️ Alerta de Segurança</h2>
-    <p>Olá, ${name}!</p>
-    <p>Detectamos atividade suspeita em sua conta:</p>
+    <h2>⚠️ Security Alert</h2>
+    <p>Hello, ${name}!</p>
+    <p>We detected suspicious activity on your account:</p>
     <p style="padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; margin: 20px 0;">
       ${details}
     </p>
-    <p>Se foi você, ignore este email. Caso contrário, recomendamos que você:</p>
+    <p>If this was you, ignore this email. Otherwise, we recommend you:</p>
     <ul>
-      <li>Altere sua senha imediatamente</li>
-      <li>Revise suas configurações de segurança</li>
-      <li>Entre em contato conosco se precisar de ajuda</li>
+      <li>Change your password immediately</li>
+      <li>Review your security settings</li>
+      <li>Contact us if you need help</li>
     </ul>
     <div style="text-align: center;">
-      <a href="${SITE_URL}/configuracoes/seguranca" class="button">Revisar Segurança</a>
+      <a href="${SITE_URL}/settings/security" class="button">Review Security</a>
     </div>
   `;
 
@@ -285,7 +285,7 @@ export async function sendSecurityAlertEmail(
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
-    subject: '⚠️ Alerta de Segurança - Eternal Gift',
+    subject: '⚠️ Security Alert - Eternal Gift',
     html: getEmailTemplate(content),
   });
 }
