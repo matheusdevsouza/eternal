@@ -5,20 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Settings from '../ui/Settings';
+import { useAuth } from '@/contexts/AuthContext';
+import { Icons } from '../ui/Icons';
 
-/**
- * Estrutura de item de navegação.
- * Define links simples, ações ou submenus.
- * 
- * @interface NavItem
- * @property {string} label - Texto visível do link
- * @property {string} [href] - URL de destino (opcional se tiver submenu ou onClick)
- * @property {Function} [onClick] - Ação personalizada ao clicar
- * @property {Array} [submenu] - Lista de itens para dropdown
- * @property {string} submenu.label - Texto do subitem
- * @property {string} submenu.href - Link do subitem
- * @property {string} [submenu.description] - Descrição curta para o subitem
- */
 interface NavItem {
   label: string;
   href?: string;
@@ -26,30 +15,10 @@ interface NavItem {
   submenu?: { label: string; href: string; description?: string }[];
 }
 
-/**
- * Navbar Component
- * 
- * Barra de navegação principal da aplicação.
- * Responsável pela navegação global, menu mobile e ações principais.
- * 
- * Funcionalidades:
- * - Navegação desktop com dropdowns
- * - Menu mobile adaptativo (fullscreen)
- * - Navegação suave (scroll) para seções
- * - Integração com Settings
- * 
- * @component
- * @module components/layout/Navbar
- */
 export default function Navbar() {
+  const { user, loading, logout } = useAuth();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
-    setMobileMenuOpen(false);
-  };
 
   const navItems: NavItem[] = [
     {
@@ -88,6 +57,18 @@ export default function Navbar() {
     }
   ];
 
+  const handleLogout = async () => {
+    await logout();
+    setOpenDropdown(null);
+    setMobileMenuOpen(false);
+  };
+
+  const getUserInitials = () => {
+    if (user?.name) return user.name[0].toUpperCase();
+    if (user?.email) return user.email[0].toUpperCase();
+    return 'U';
+  };
+
   return (
     <>
     <nav className="fixed top-0 w-full z-50 bg-[var(--navbar-bg)] backdrop-blur-xl border-b border-[var(--border)] transition-colors duration-300">
@@ -105,7 +86,6 @@ export default function Navbar() {
               priority
             />
           </Link>
-
 
           <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
@@ -157,46 +137,96 @@ export default function Navbar() {
                       )}
                     </AnimatePresence>
                   </>
-                ) : item.href ? (
+                ) : (
                   <Link
-                    href={item.href}
+                    href={item.href || '#'}
                     onClick={item.onClick}
                     className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors rounded-lg"
                   >
                     {item.label}
                   </Link>
-                ) : (
-                  <button
-                    onClick={item.onClick}
-                    className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors rounded-lg"
-                  >
-                    {item.label}
-                  </button>
                 )}
               </div>
             ))}
           </div>
 
-
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden sm:block px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-full text-sm font-bold transition-all shadow-lg hover:scale-105 active:scale-95"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/how-it-works"
-              className="hidden sm:block px-6 py-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-full text-sm font-bold transition-all"
-            >
-              View Demo
-            </Link>
+            {loading ? (
+               <div className="w-8 h-8 rounded-full bg-[var(--border)] animate-pulse" />
+            ) : user ? (
+              <div 
+                className="relative hidden sm:block"
+                onMouseEnter={() => setOpenDropdown('user-profile')}
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
+                <div className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] transition-colors hover:border-[var(--primary)]/30">
+                   <Icons.User className="w-5 h-5 text-[var(--primary)]" />
+                   <span className="text-sm font-medium text-[var(--text)] max-w-[120px] truncate">
+                     {user.name?.split(' ')[0] || 'Account'}
+                   </span>
+                   <Icons.ChevronDown className="w-4 h-4 text-[var(--text-secondary)]" />
+                </div>
 
+                <AnimatePresence>
+                  {openDropdown === 'user-profile' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute top-full right-0 mt-2 w-56 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-xl p-2 z-50"
+                    >
+                      <div className="px-3 py-2 border-b border-[var(--border)] mb-2">
+                        <p className="font-bold text-sm text-[var(--text)] truncate">{user.name || 'User'}</p>
+                        <p className="text-xs text-[var(--text-secondary)] truncate">{user.email}</p>
+                      </div>
+                      
+                      <Link 
+                        href="/dashboard" 
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-deep)] rounded-lg transition-colors"
+                      >
+                        <Icons.LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Link>
+                      
+                      <Link 
+                        href="/settings" 
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-deep)] rounded-lg transition-colors"
+                      >
+                        <Icons.Settings className="w-4 h-4" />
+                        Settings
+                      </Link>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-500/10 rounded-lg transition-colors mt-1"
+                      >
+                        <Icons.LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="hidden sm:block px-6 py-2.5 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white rounded-full text-sm font-bold transition-all shadow-[0_4px_15px_rgba(255,51,102,0.25)] hover:shadow-[0_4px_20px_rgba(255,51,102,0.35)] hover:scale-105 active:scale-95"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/how-it-works"
+                  className="hidden sm:block px-6 py-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--primary)] text-[var(--text)] rounded-full text-sm font-bold transition-all shadow-sm"
+                >
+                  View Demo
+                </Link>
+              </>
+            )}
 
             <div className="hidden sm:block">
               <Settings />
             </div>
-
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -220,7 +250,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-
 
     <AnimatePresence>
       {mobileMenuOpen && (
@@ -273,9 +302,9 @@ export default function Navbar() {
                         )}
                       </AnimatePresence>
                     </div>
-                  ) : item.href ? (
+                  ) : (
                     <Link
-                      href={item.href}
+                      href={item.href || '#'}
                       onClick={() => {
                         item.onClick?.();
                         setMobileMenuOpen(false);
@@ -284,35 +313,62 @@ export default function Navbar() {
                     >
                       {item.label}
                     </Link>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        item.onClick?.();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full px-4 py-4 text-left text-base font-bold text-[var(--text)] hover:text-[var(--primary)] transition-colors rounded-xl hover:bg-[var(--bg-card)]"
-                    >
-                      {item.label}
-                    </button>
                   )}
                 </div>
               ))}
             </div>
+
             <div className="pt-6 space-y-3 border-t border-[var(--border)] mt-6">
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full px-6 py-4 bg-[var(--primary)] hover:opacity-90 text-white rounded-2xl text-base font-bold text-center transition-all shadow-lg"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/how-it-works"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full px-6 py-4 bg-[var(--bg-card)] border-2 border-[var(--border)] hover:bg-[var(--border)] text-[var(--text)] rounded-2xl text-base font-bold text-center transition-all"
-              >
-                View Demo
-              </Link>
+              {loading ? (
+                 <div className="text-center py-4">Loading...</div>
+              ) : user ? (
+                <>
+                  <div className="flex items-center gap-3 px-4 py-2 mb-4 bg-[var(--bg-card)] rounded-xl border border-[var(--border)]">
+                    <div className="w-10 h-10 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-bold">
+                       {getUserInitials()}
+                    </div>
+                    <div className="overflow-hidden">
+                       <div className="font-bold text-[var(--text)] truncate">{user.name || 'User'}</div>
+                       <div className="text-xs text-[var(--text-secondary)] truncate">{user.email}</div>
+                    </div>
+                  </div>
+                  
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 w-full px-6 py-4 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white rounded-2xl text-base font-bold text-center transition-all shadow-lg justify-center"
+                  >
+                    <Icons.LayoutDashboard className="w-5 h-5" />
+                    Go to Dashboard
+                  </Link>
+                  
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 w-full px-6 py-4 bg-[var(--bg-card)] border-2 border-[var(--border)] hover:bg-red-500/10 hover:border-red-500/30 text-[var(--text)] hover:text-red-500 rounded-2xl text-base font-bold text-center transition-all justify-center"
+                  >
+                    <Icons.LogOut className="w-5 h-5" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full px-6 py-4 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white rounded-2xl text-base font-bold text-center transition-all shadow-lg"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/how-it-works"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full px-6 py-4 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--primary)] text-[var(--text)] rounded-2xl text-base font-bold text-center transition-all"
+                  >
+                    View Demo
+                  </Link>
+                </>
+              )}
+              
               <div className="flex justify-center pt-4">
                 <Settings />
               </div>

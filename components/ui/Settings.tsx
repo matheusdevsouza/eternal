@@ -13,10 +13,10 @@ export default function Settings() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2.5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--border)] rounded-full transition-all hover:scale-110 active:scale-95"
-        aria-label="Configurações"
+        className="p-2 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors cursor-pointer"
+        aria-label="Settings"
       >
-        <Icons.Settings className="w-5 h-5 text-[var(--text)]" />
+        <Icons.Settings className="w-5 h-5" />
       </button>
 
       <AnimatePresence>

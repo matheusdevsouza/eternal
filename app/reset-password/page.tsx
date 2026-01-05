@@ -7,11 +7,13 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useTheme } from '@/contexts/ThemeContext';
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
+  const { theme } = useTheme();
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -69,9 +71,9 @@ function ResetPasswordContent() {
     return (
       <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md text-center">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30 rounded-xl p-8">
-            <h2 className="text-2xl font-bold mb-2 text-red-900 dark:text-red-100">Token not found</h2>
-            <p className="text-red-700 dark:text-red-300 mb-6">
+          <div className="bg-[var(--error-bg)] border border-[var(--error-border)] rounded-xl p-8">
+            <h2 className="text-2xl font-bold mb-2 text-[var(--error-text)]">Token not found</h2>
+            <p className="text-[var(--error-text)] opacity-80 mb-6">
               Invalid or expired link
             </p>
             <Link
@@ -102,6 +104,7 @@ function ResetPasswordContent() {
               width={140} 
               height={46}
               className="h-12 w-auto mx-auto"
+              style={{ filter: theme === 'light' ? 'var(--logo-filter)' : 'none' }}
             />
           </Link>
           <h1 className="text-3xl font-bold mb-2">Reset Password</h1>
@@ -111,27 +114,27 @@ function ResetPasswordContent() {
         </div>
 
         {success ? (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/30 rounded-xl p-6 text-center">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-[var(--success-bg)] border border-[var(--success-border)] rounded-xl p-6 text-center">
+            <div className="w-16 h-16 bg-[var(--success-icon-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-[var(--success-icon)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold mb-2 text-green-900 dark:text-green-100">Password reset!</h3>
-            <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+            <h3 className="text-lg font-bold mb-2 text-[var(--success-text)]">Password reset!</h3>
+            <p className="text-sm text-[var(--success-text)] opacity-80 mb-2">
               Your password has been changed successfully.
             </p>
-            <p className="text-xs text-green-600 dark:text-green-400">
+            <p className="text-xs text-[var(--success-text)] opacity-60">
               Redirecting to login...
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30 rounded-xl p-4">
-                <p className="text-sm text-red-700 dark:text-red-300 font-medium mb-2">{error}</p>
+              <div className="bg-[var(--error-bg)] border border-[var(--error-border)] rounded-xl p-4">
+                <p className="text-sm text-[var(--error-text)] font-medium mb-2">{error}</p>
                 {passwordErrors.length > 0 && (
-                  <ul className="text-xs text-red-600 dark:text-red-400 space-y-1 mt-2">
+                  <ul className="text-xs text-[var(--error-text)] opacity-80 space-y-1 mt-2">
                     {passwordErrors.map((err, idx) => (
                       <li key={idx}>• {err}</li>
                     ))}
@@ -171,9 +174,9 @@ function ResetPasswordContent() {
               />
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900/30 rounded-xl p-4">
-              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-2">Password requirements:</p>
-              <ul className="text-xs text-blue-600 dark:text-blue-400 space-y-1">
+            <div className="bg-[var(--info-bg)] border border-[var(--info-border)] rounded-xl p-4">
+              <p className="text-xs text-[var(--info-text)] font-medium mb-2">Password requirements:</p>
+              <ul className="text-xs text-[var(--info-text)] opacity-80 space-y-1">
                 <li>• Minimum 8 characters</li>
                 <li>• One uppercase letter</li>
                 <li>• One lowercase letter</li>
@@ -211,17 +214,3 @@ export default function RedefinirSenhaPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

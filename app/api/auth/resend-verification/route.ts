@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
-import { sanitizeEmail, generateSecureToken, getExpiryDate, SECURITY_CONFIG } from '@/lib/auth';
+import { 
+  sanitizeEmail, 
+  validateEmail, 
+  generateSecureToken,
+  getExpiryDate,
+  SECURITY_CONFIG
+} from '@/lib/auth';
 import { sendVerificationEmail } from '@/lib/email';
-import { rateLimitMiddleware, contentTypeMiddleware } from '@/lib/middleware';
-import { isValidEmail } from '@/lib/security';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
  * @api {post} /api/auth/resend-verification Reenvio de Email de Verificação
- * @description Reenvia email de verificação para usuário não verificado
  */
 
 export async function POST(request: NextRequest) {
   try {
-    const rateLimitResponse = rateLimitMiddleware(request, 'resend-verification', 3, 60 * 60 * 1000);
-    if (rateLimitResponse) return rateLimitResponse;
-
-    const contentTypeResponse = contentTypeMiddleware(request);
-    if (contentTypeResponse) return contentTypeResponse;
-
     const prisma = getPrisma();
     const body = await request.json();
     const { email } = body;
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     const sanitizedEmail = sanitizeEmail(email);
-    if (!isValidEmail(sanitizedEmail)) {
+    if (!validateEmail(sanitizedEmail)) {
       return NextResponse.json(
         { error: 'Email inválido' },
         { status: 400 }
@@ -44,62 +41,55 @@ export async function POST(request: NextRequest) {
       where: { email: sanitizedEmail },
     });
 
-    if (!user) {
+    // Se usuário não existe ou já está verificado, retornamos sucesso por segurança (evitar enumeration)
+    // Mas se já verificado, podemos avisar que já está verificado se for UX preferível.
+    // O prompt pede "mensagens que vazam informações sensíveis" a serem evitadas.
+    // Então "Verifique seu email" é a mensagem safest.
+    
+    if (!user || user.emailVerified) {
 
-      // Não revela se o email existe ou não (segurança)
+      // Se já verificado, nada a fazer.
 
       return NextResponse.json(
-        {
-          success: true,
-          message: 'Se o email estiver cadastrado, você receberá um email de verificação.',
-        },
+        { success: true, message: 'Se o email existir e não estiver verificado, um novo link será enviado.' },
         { status: 200 }
       );
     }
 
-    if (user.emailVerified) {
-      return NextResponse.json(
-        { error: 'Email já foi verificado' },
-        { status: 400 }
-      );
-    }
-
-    // Remove tokens antigos
+    // Limpar tokens antigos
 
     await prisma.verificationToken.deleteMany({
       where: { userId: user.id },
     });
 
-    // Gera novo token
+    // Gerar novo token
 
     const verificationToken = generateSecureToken();
+    const tokenExpiry = getExpiryDate(SECURITY_CONFIG.VERIFICATION_TOKEN_EXPIRY);
+
     await prisma.verificationToken.create({
       data: {
         token: verificationToken,
         userId: user.id,
-        expiresAt: getExpiryDate(SECURITY_CONFIG.VERIFICATION_TOKEN_EXPIRY),
+        expiresAt: tokenExpiry,
       },
     });
 
-    // Envia email
+    // Enviar email
     
-    sendVerificationEmail(
-      user.email,
-      user.name || 'Usuário',
-      verificationToken
-    ).catch(error => console.error('[EMAIL_ERROR]', error));
+    if (process.env.EMAIL_HOST || process.env.SMTP_HOST) {
+       await sendVerificationEmail(user.email, user.name || 'User', verificationToken);
+    }
 
     return NextResponse.json(
-      {
-        success: true,
-        message: 'Email de verificação reenviado com sucesso!',
-      },
+      { success: true, message: 'Email de verificação reenviado com sucesso.' },
       { status: 200 }
     );
+
   } catch (error) {
     console.error('[RESEND_VERIFICATION_ERROR]', error);
     return NextResponse.json(
-      { error: 'Erro ao reenviar email de verificação' },
+      { error: 'Erro ao processar solicitação.' },
       { status: 500 }
     );
   }

@@ -49,9 +49,9 @@ function PricingCard({ tier, index }: { tier: Tier; index: number }) {
       </div>
       
       <button 
-        className={`w-full py-4 rounded-2xl font-bold transition-all ${
+        className={`w-full py-4 rounded-2xl font-bold transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] ${
           tier.popular 
-            ? 'bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white' 
+            ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white shadow-[0_4px_20px_rgba(255,51,102,0.25)]' 
             : 'bg-[var(--bg-card-hover)] hover:bg-[var(--border)] text-[var(--text)] border border-[var(--border)]'
         }`}
       >
@@ -68,7 +68,7 @@ export default function Pricing() {
       price: '29',
       features: [
         'Unlimited Pages',
-        'Up to 5 HD Photos per page',
+        'Unlimited HD Photos per page',
         'Custom text',
         'Public link',
         'Standard QR Code'

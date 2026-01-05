@@ -43,44 +43,27 @@ export default function Stats() {
   ];
 
   return (
-    <section className="py-24 border-y border-[var(--border)] bg-gradient-to-b from-[var(--bg-gradient-start)]/50 to-[var(--bg-gradient-end)] relative overflow-hidden">
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-black mb-4">
-            <span className="text-[var(--text)]">Numbers that</span>{' '}
-            <span className="text-[var(--primary)]">speak for themselves</span>
-          </h2>
-          <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Join thousands of couples who have already created unforgettable gifts
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+    <section className="py-20 px-6 bg-[var(--bg-card)]">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-              className="flex flex-col items-center"
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="text-center"
             >
-              <div className="text-[var(--primary)] mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--primary)]/10 text-[var(--primary)] flex items-center justify-center">
                 {stat.icon}
               </div>
-              <div className="text-5xl md:text-6xl font-black mb-3 bg-gradient-to-r from-[var(--primary)] via-[var(--primary-hover)] to-[var(--accent)] bg-clip-text text-transparent leading-none">
+              <p className="text-3xl md:text-4xl font-bold text-[var(--text)] mb-1">
                 {stat.value}
-              </div>
-              <div className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] letter-spacing-wider">
+              </p>
+              <p className="text-sm text-[var(--text-secondary)]">
                 {stat.label}
-              </div>
+              </p>
             </motion.div>
           ))}
         </div>

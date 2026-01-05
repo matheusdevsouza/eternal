@@ -46,10 +46,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Busca usuário
+    // Busca usuário com assinatura
 
     const user = await prisma.user.findUnique({
       where: { email: sanitizedEmail },
+      include: {
+        subscription: {
+          select: {
+            id: true,
+            plan: true,
+            status: true,
+            endDate: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -181,6 +191,18 @@ export async function POST(request: NextRequest) {
       rememberMe ? '28d' : '7d'
     );
 
+    // Determina se usuário tem assinatura ativa
+    const subscription = user.subscription;
+    const now = new Date();
+    
+    const hasActiveSubscription = !!(subscription 
+      && subscription.status === 'ACTIVE'
+      && (!subscription.endDate || subscription.endDate > now)
+    );
+
+    // Determina URL de redirecionamento baseado no status da assinatura
+    const redirectUrl = hasActiveSubscription ? '/dashboard' : '/pricing';
+
     // Resposta
 
     const response = NextResponse.json(
@@ -194,6 +216,14 @@ export async function POST(request: NextRequest) {
           plan: user.plan,
           emailVerified: user.emailVerified,
         },
+        subscription: subscription ? {
+          id: subscription.id,
+          plan: subscription.plan,
+          status: subscription.status,
+          endDate: subscription.endDate,
+        } : null,
+        hasActiveSubscription,
+        redirectUrl,
       },
       { status: 200 }
     );

@@ -1,71 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
 import { verifyJWT } from '@/lib/auth';
-import { authMiddleware } from '@/lib/middleware';
-import { logAuditEvent, AuditAction } from '@/lib/audit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/**
- * @api {post} /api/auth/logout Logout de Usuário
- * @description Invalida a sessão atual do usuário
- */
-
 export async function POST(request: NextRequest) {
   try {
-    const auth = await authMiddleware(request);
-    
-    if (!auth) {
-      return NextResponse.json(
-        { error: 'Não autenticado' },
-        { status: 401 }
-      );
-    }
-
     const sessionCookie = request.cookies.get('session');
 
     if (sessionCookie) {
-      try {
-    const payload = verifyJWT(sessionCookie.value);
-    
-        if (payload?.sessionId) {
-          const prisma = getPrisma();
-    await prisma.session.delete({
-      where: { id: payload.sessionId },
-    });
+      const payload = verifyJWT(sessionCookie.value);
+      if (payload && payload.sessionId) {
+        const prisma = getPrisma();
 
-          // Log de auditoria
-          
-          await logAuditEvent(auth.userId, AuditAction.LOGOUT, request, {
-            sessionId: payload.sessionId,
-          });
-        }
-      } catch (error) {
-        
-        // Token inválido, apenas limpa o cookie
-
+        // Deleta a sessão do banco de dados
+        await prisma.session.delete({
+          where: { id: payload.sessionId },
+        }).catch(() => {}); 
       }
     }
 
-    const response = NextResponse.json(
-      {
-        success: true,
-        message: 'Logout realizado com sucesso',
-      },
-      { status: 200 }
-    );
-
-    // Remove cookie
+    const response = NextResponse.json({ success: true, message: 'Logged out successfully' });
     
-    response.cookies.delete('session');
+    // Limpeza dos cookies
+    response.cookies.set('session', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: new Date(0),
+      path: '/',
+    });
 
     return response;
   } catch (error) {
     console.error('[LOGOUT_ERROR]', error);
-    return NextResponse.json(
-      { error: 'Erro ao fazer logout' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Logout failed' }, { status: 500 });
   }
 }

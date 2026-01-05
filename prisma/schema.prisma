@@ -1,25 +1,27 @@
-// Prisma
+// Prisma Schema - Eternal Gift Platform
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = []
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-// Modelo de Usuário
+// =====================================================
+// USER & AUTHENTICATION
+// =====================================================
+
 model User {
   id                String    @id @default(cuid())
   email             String    @unique
   name              String?
-  password          String    // Hash bcrypt
-  plan              Plan      @default(START)
+  password          String
+  plan              Plan?     // NULL until paid - NO DEFAULT
   emailVerified     Boolean   @default(false)
   emailVerifiedAt   DateTime?
   twoFactorEnabled  Boolean   @default(false)
-  twoFactorSecret   String?   // Criptografado
+  twoFactorSecret   String?
   lastLoginAt       DateTime?
   lastLoginIP       String?
   loginAttempts     Int       @default(0)
@@ -33,13 +35,13 @@ model User {
   passwordResetTokens PasswordResetToken[]
   sessions          Session[]
   auditLogs         AuditLog[]
+  payments          Payment[]
   
   @@index([email])
   @@index([emailVerified])
   @@index([lockedUntil])
 }
 
-// Modelo de Token de Verificação de Email
 model VerificationToken {
   id          String    @id @default(cuid())
   token       String    @unique
@@ -51,7 +53,6 @@ model VerificationToken {
   @@index([userId])
 }
 
-// Modelo de Token de Reset de Senha
 model PasswordResetToken {
   id          String    @id @default(cuid())
   token       String    @unique
@@ -64,7 +65,6 @@ model PasswordResetToken {
   @@index([userId])
 }
 
-// Modelo de Sessão
 model Session {
   id          String    @id @default(cuid())
   token       String    @unique
@@ -79,16 +79,95 @@ model Session {
   @@index([token])
 }
 
-// Modelo de Presente/Página
+// =====================================================
+// SUBSCRIPTION & PAYMENTS
+// =====================================================
+
+model Subscription {
+  id            String              @id @default(cuid())
+  plan          Plan                @default(START)
+  status        SubscriptionStatus  @default(ACTIVE)
+  startDate     DateTime            @default(now())
+  endDate       DateTime?
+  autoRenew     Boolean             @default(true)
+  cancelledAt   DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  
+  userId        String              @unique
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments      Payment[]
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  amount          Int           // Amount in cents
+  currency        String        @default("BRL")
+  status          PaymentStatus @default(PENDING)
+  method          String?       // pix, credit_card, boleto
+  gatewayId       String?       // External gateway transaction ID
+  gatewayResponse Json?
+  description     String?
+  
+  // Security fields
+  targetPlan      Plan?         // The plan user is paying for - source of truth, NOT gateway metadata
+  idempotencyKey  String?       @unique // Prevents duplicate payment processing
+  processedAt     DateTime?     // When payment was actually processed
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptionId  String?
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  couponId        String?
+  coupon          Coupon?       @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([idempotencyKey])
+}
+
+model Coupon {
+  id              String        @id @default(cuid())
+  code            String        @unique
+  description     String?
+  discountType    DiscountType  @default(PERCENTAGE)
+  discountValue   Int           // Percentage (0-100) or fixed amount in cents
+  maxUses         Int?
+  usedCount       Int           @default(0)
+  minPurchase     Int?          // Minimum purchase amount in cents
+  validPlans      Plan[]        // Which plans this coupon applies to
+  validFrom       DateTime      @default(now())
+  validUntil      DateTime?
+  active          Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  
+  payments        Payment[]
+  
+  @@index([code])
+  @@index([active])
+}
+
+// =====================================================
+// GIFTS & CONTENT
+// =====================================================
+
 model Gift {
   id            String    @id @default(cuid())
   slug          String    @unique
   title         String
   message       String    @db.Text
+  recipientName String?
   theme         String    @default("elegance")
   font          String    @default("serif-luxe")
-  animation     String    @default("fade-out")
+  animation     String    @default("fade-in")
+  backgroundColor String?
+  textColor     String?
   published     Boolean   @default(false)
+  publishedAt   DateTime?
   views         Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -99,9 +178,12 @@ model Gift {
   photos        Photo[]
   musics        Music[]
   qrCode        QRCode?
+  
+  @@index([userId])
+  @@index([published])
+  @@index([slug])
 }
 
-// Modelo de Foto
 model Photo {
   id            String    @id @default(cuid())
   url           String
@@ -111,63 +193,50 @@ model Photo {
   
   giftId        String
   gift          Gift      @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  
+  @@index([giftId])
 }
 
-// Modelo de Música
 model Music {
   id            String    @id @default(cuid())
   name          String
   artist        String?
   url           String
-  duration      Int?
+  duration      Int?      // Duration in seconds
+  order         Int       @default(0)
   createdAt     DateTime  @default(now())
   
   giftId        String
   gift          Gift      @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  
+  @@index([giftId])
 }
 
-// Modelo de QR Code
 model QRCode {
   id            String    @id @default(cuid())
   imageUrl      String
   customized    Boolean   @default(false)
+  foregroundColor String?
+  backgroundColor String?
+  logoUrl       String?
   createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   
   giftId        String    @unique
   gift          Gift      @relation(fields: [giftId], references: [id], onDelete: Cascade)
 }
 
-// Modelo de Assinatura
-model Subscription {
-  id            String    @id @default(cuid())
-  status        SubscriptionStatus @default(ACTIVE)
-  startDate     DateTime  @default(now())
-  endDate       DateTime?
-  autoRenew     Boolean   @default(true)
-  
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+// =====================================================
+// AUDIT & SECURITY
+// =====================================================
 
-// Enums
-enum Plan {
-  START
-  PREMIUM
-  ETERNAL
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELLED
-  EXPIRED
-}
-
-// Modelo de Auditoria de Segurança
 model AuditLog {
   id          String    @id @default(cuid())
   userId      String?
   user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  action      String    // login, logout, password_change, etc.
+  action      String
+  resource    String?   // gift, subscription, payment, etc.
+  resourceId  String?
   ipAddress   String?
   userAgent   String?
   metadata    Json?
@@ -176,4 +245,38 @@ model AuditLog {
   @@index([userId])
   @@index([action])
   @@index([createdAt])
+  @@index([resource, resourceId])
+}
+
+// =====================================================
+// ENUMS
+// =====================================================
+
+enum Plan {
+  START
+  PREMIUM
+  ETERNAL
+}
+
+enum SubscriptionStatus {
+  PENDING     // Awaiting first payment
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAST_DUE
+  REFUNDED    // Refunded - access revoked
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
 }

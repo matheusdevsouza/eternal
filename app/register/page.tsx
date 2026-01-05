@@ -7,8 +7,13 @@ import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { ToastContainer, toast } from '@/components/ui/Toast';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Icons } from '@/components/ui/Icons';
 
 export default function RegistroPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,7 +21,9 @@ export default function RegistroPage() {
     confirmPassword: ''
   });
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const { theme } = useTheme();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -28,8 +35,6 @@ export default function RegistroPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validações básicas
-
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -58,17 +63,13 @@ export default function RegistroPage() {
       const data = await response.json();
       
       if (!response.ok) {
-
         toast.error(data.error || 'Error creating account');
         setLoading(false);
         return;
       }
 
+      setSuccess(true);
       toast.success(data.message || 'Account created successfully!');
-
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 1500);
       
     } catch (error) {
       console.error('Error creating account:', error);
@@ -77,131 +78,229 @@ export default function RegistroPage() {
     }
   };
 
+  if (success) {
+     return (
+        <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)] relative overflow-hidden flex flex-col">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--primary-light),_transparent_70%)] opacity-30 pointer-events-none" />
+          
+          <ToastContainer />
+          <Navbar />
+          
+          <div className="pt-28 pb-20 px-4 flex-grow flex items-center justify-center relative z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="w-full max-w-lg"
+            >
+              <div className="bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border)] p-10 rounded-3xl shadow-2xl text-center relative overflow-hidden">
+                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--success-icon)] to-transparent opacity-50" />
+                 
+                 <div className="w-20 h-20 bg-[var(--success-bg)] rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[var(--success-bg)]">
+                    <svg className="w-10 h-10 text-[var(--success-icon)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                 </div>
+                 
+                 <h2 className="text-3xl font-bold mb-3 tracking-tight">Check your email</h2>
+                 <p className="text-[var(--text-secondary)] mb-8 text-lg leading-relaxed">
+                   We've sent a verification link to <br/>
+                   <span className="font-semibold text-[var(--text)]">{formData.email}</span>
+                 </p>
+                 
+                 <Link 
+                   href="/login" 
+                   className="block w-full py-4 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
+                 >
+                   Go to Login
+                 </Link>
+              </div>
+            </motion.div>
+          </div>
+          <Footer />
+        </div>
+     );
+  }
+
   return (
-    <div className="min-h-screen bg-[#0F0507] text-[#FFF1F2]">
+    <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)] relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--primary-light),_transparent_70%)] opacity-30 pointer-events-none" />
+      
       <ToastContainer />
       <Navbar />
       
-      <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
+      <div className="pt-28 pb-20 px-4 min-h-screen flex items-center justify-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className="w-full max-w-lg"
         >
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-block mb-6">
-              <Image 
-                src="/logo.png" 
-                alt="Eternal Gift" 
-                width={140} 
-                height={46}
-                className="h-12 w-auto mx-auto"
-              />
-            </Link>
-            <h1 className="text-3xl font-bold mb-2">Create your account</h1>
-            <p className="text-[#FFF1F2]/60">Start creating unforgettable gifts</p>
-          </div>
+          <div className="bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--border)] p-8 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent opacity-50 blur-sm" />
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-2">
-                Full name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="Your name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="your@email.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength={8}
-                className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="Minimum 8 characters"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-                Confirm password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-[#1A0B0E] border border-[#2D1318] rounded-xl outline-none focus:border-[#FF3366] transition-all text-[#FFF1F2]"
-                placeholder="Type again"
-              />
-            </div>
-
-            <div className="flex items-start gap-3">
-              <input
-                id="terms"
-                type="checkbox"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                required
-                className="mt-1 w-4 h-4 rounded border-[#2D1318] bg-[#1A0B0E] text-[#FF3366] focus:ring-[#FF3366] focus:ring-offset-0"
-              />
-              <label htmlFor="terms" className="text-sm text-[#FFF1F2]/60">
-                I agree to the{' '}
-                <Link href="/terms" className="text-[#FF3366] hover:underline">Terms of Use</Link>
-                {' '}and{' '}
-                <Link href="/privacy" className="text-[#FF3366] hover:underline">Privacy Policy</Link>
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-[#FF3366] hover:bg-[#FF4D7D] text-white font-bold rounded-xl transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Creating account...' : 'Create account'}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-[#FFF1F2]/60">
-              Already have an account?{' '}
-              <Link href="/login" className="text-[#FF3366] hover:text-[#FF4D7D] font-medium transition-colors">
-                Sign In
+            <div className="text-center mb-8">
+              <Link href="/" className="inline-block mb-6 transform hover:scale-105 transition-transform duration-300">
+                <Image 
+                  src="/logo.png" 
+                  alt="Eternal Gift" 
+                  width={160} 
+                  height={53}
+                  className="h-14 w-auto mx-auto"
+                  style={{ filter: theme === 'light' ? 'var(--logo-filter)' : 'none' }}
+                />
               </Link>
-            </p>
+              <h1 className="text-3xl font-bold mb-2 tracking-tight">Create account</h1>
+              <p className="text-[var(--text-secondary)]">Begin your journey of eternal memories</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              
+              <div className="space-y-1.5">
+                <label htmlFor="name" className="block text-sm font-medium text-[var(--text-secondary)] ml-1">
+                  Full name
+                </label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors">
+                     <Icons.User className="w-5 h-5" />
+                  </div>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-12 pr-4 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10 transition-all text-[var(--text)] placeholder-[var(--text-light)] shadow-inner"
+                    placeholder="John Doe"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] ml-1">
+                  Email
+                </label>
+                <div className="relative group">
+                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                   </div>
+                   <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-12 pr-4 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10 transition-all text-[var(--text)] placeholder-[var(--text-light)] shadow-inner"
+                    placeholder="your@email.com"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="password" className="block text-sm font-medium text-[var(--text-secondary)] ml-1">
+                  Password
+                </label>
+                <div className="relative group">
+                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors">
+                      <Icons.Lock className="w-5 h-5" />
+                   </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    minLength={8}
+                    className="w-full pl-12 pr-12 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10 transition-all text-[var(--text)] placeholder-[var(--text-light)] shadow-inner"
+                    placeholder="Min 8 chars"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors p-1"
+                  >
+                    {showPassword ? (
+                         <Icons.EyeOff className="w-5 h-5" />
+                    ) : (
+                         <Icons.Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--text-secondary)] ml-1">
+                  Confirm Password
+                </label>
+                <div className="relative group">
+                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--primary)] transition-colors">
+                      <Icons.Lock className="w-5 h-5" />
+                   </div>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-12 pr-12 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10 transition-all text-[var(--text)] placeholder-[var(--text-light)] shadow-inner"
+                    placeholder="Retype password"
+                  />
+                  <button
+                     type="button"
+                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                     className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors p-1"
+                  >
+                    {showConfirmPassword ? (
+                        <Icons.EyeOff className="w-5 h-5" />
+                    ) : (
+                        <Icons.Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 pt-2">
+                <div className="relative flex items-center h-5">
+                  <input
+                    id="terms"
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                    required
+                    className="w-5 h-5 rounded border-[var(--border)] bg-[var(--bg-deep)] text-[var(--primary)] focus:ring-[var(--primary)] focus:ring-offset-0 transition-colors cursor-pointer"
+                  />
+                </div>
+                <label htmlFor="terms" className="text-sm text-[var(--text-secondary)] leading-tight cursor-pointer">
+                  I agree to the{' '}
+                  <Link href="/terms" className="text-[var(--primary)] hover:underline font-medium">Terms of Use</Link>
+                  {' '}and{' '}
+                  <Link href="/privacy" className="text-[var(--primary)] hover:underline font-medium">Privacy Policy</Link>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full mt-4 py-4 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white font-bold rounded-xl transition-all shadow-[0_4px_20px_rgba(255,51,102,0.25)] hover:shadow-[0_4px_25px_rgba(255,51,102,0.35)] hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Creating account...' : 'Create Account'}
+              </button>
+            </form>
+
+            <div className="mt-8 text-center">
+              <p className="text-sm text-[var(--text-secondary)]">
+                Already have an account?{' '}
+                <Link href="/login" className="text-[var(--primary)] hover:text-[var(--primary-hover)] font-bold transition-colors">
+                  Sign In
+                </Link>
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -210,5 +309,3 @@ export default function RegistroPage() {
     </div>
   );
 }
-
-

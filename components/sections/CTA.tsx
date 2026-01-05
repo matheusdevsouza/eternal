@@ -9,16 +9,8 @@ import Link from "next/link";
  * Seção final de chamada para ação.
  * Incentiva o usuário a converter (criar conta ou ver planos) antes do rodapé.
  * Utiliza gradientes e padrões de fundo para destaque visual.
- * 
- * @component
- * @module components/sections/CTA
  */
 export default function CTA() {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section className="py-32 px-6 relative overflow-hidden bg-gradient-to-br from-[var(--bg-deep)] via-[var(--bg-section)] to-[var(--bg-deep)]">
 
@@ -48,14 +40,14 @@ export default function CTA() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/pricing"
-              className="px-10 py-5 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-bold rounded-2xl transition-all shadow-[0_0_40px_var(--shadow-color)] hover:scale-105 active:scale-95"
+              href="/register"
+              className="px-10 py-5 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white font-bold rounded-2xl transition-all shadow-[0_4px_20px_rgba(255,51,102,0.25)] hover:shadow-[0_4px_25px_rgba(255,51,102,0.35)] hover:scale-105 active:scale-95 text-center"
             >
               Start Now
             </Link>
             <Link
               href="/login"
-              className="px-10 py-5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] text-[var(--text)] font-bold rounded-2xl transition-all"
+              className="px-10 py-5 bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--primary)] text-[var(--text)] font-bold rounded-2xl transition-all text-center"
             >
               I already have an account
             </Link>

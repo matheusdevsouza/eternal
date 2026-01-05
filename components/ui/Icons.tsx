@@ -206,6 +206,180 @@ export const Icons = {
     <svg className={className || "w-6 h-6"} fill="currentColor" viewBox="0 0 24 24">
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
     </svg>
+  ),
+  
+  Eye: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  ),
+
+  EyeOff: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+    </svg>
+  ),
+
+  LogOut: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    </svg>
+  ),
+
+  LayoutDashboard: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    </svg>
+  ),
+
+  CreditCard: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <line x1="2" y1="10" x2="22" y2="10" />
+    </svg>
+  ),
+
+  FileText: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <polyline points="10 9 9 9 8 9" />
+    </svg>
+  ),
+
+  Plus: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  ),
+
+  Shield: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  ),
+
+  AlertTriangle: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  ),
+
+  Bell: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 01-3.46 0" />
+    </svg>
+  ),
+
+  Info: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  ),
+
+  AlertCircle: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+  ),
+
+  Palette: ({ className }: { className?: string }) => (
+    <svg 
+      className={className || "w-6 h-6"} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      viewBox="0 0 24 24"
+    >
+      <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor" />
+      <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor" />
+      <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor" />
+      <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor" />
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" />
+    </svg>
   )
 };
 

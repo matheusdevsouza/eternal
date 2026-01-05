@@ -1,39 +1,77 @@
+/**
+ * Singleton do Prisma Client com Adaptador PostgreSQL
+ * 
+ * Prisma 7.2.0 "Config File Mode" usa por padrão o engine Wasm ("client")
+ * que requer um driver adapter.
+ */
+
 import { PrismaClient } from '@prisma/client';
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+declare global {
+  // eslint-disable-next-line no-var
+  var __prisma: PrismaClient | undefined;
+}
 
-function createPrismaClient() {
+/**
+ * Criar instância do Prisma Client
+ */
+
+function createPrismaClient(): PrismaClient {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL não está definido no ambiente.');
+  }
+
+  // Usar pool 'pg' e adapter
+
+  const pool = new Pool({ 
+    connectionString: process.env.DATABASE_URL,
+  });
+  
+  const adapter = new PrismaPg(pool);
+
   return new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    adapter,
+    log: process.env.NODE_ENV === 'development' 
+      ? ['error', 'warn'] 
+      : ['error'],
   });
 }
 
 /**
- * Lazy init para evitar que o Next (build / edge-like evaluation) tente criar PrismaClient
- * durante a fase de "Collecting page data".
+ * Obter instância do Prisma Client
+ * 
+ * Utiliza padrão singleton para reutilizar conexões.
  */
 
-export function getPrisma() {
-  if (globalForPrisma.prisma) return globalForPrisma.prisma;
-
-  // Se estivermos num contexto edge-like, não inicializamos Prisma aqui.
-  // (No runtime Node real, isso não existe.)
+export function getPrisma(): PrismaClient {
+  if (global.__prisma) {
+    return global.__prisma;
+  }
 
   if (typeof (globalThis as any).EdgeRuntime === 'object') {
-    throw new Error(
-      'PrismaClient não pode ser inicializado em EdgeRuntime. Garanta runtime=\"nodejs\" e inicialização lazy.'
-    );
+    throw new Error('Prisma Adapter-PG não pode executar em Edge Runtime.');
   }
 
   const client = createPrismaClient();
 
   if (process.env.NODE_ENV !== 'production') {
-    globalForPrisma.prisma = client;
+    global.__prisma = client;
   }
 
   return client;
 }
 
+/**
+ * Desconectar Prisma Client
+ */
 
+export async function disconnectPrisma(): Promise<void> {
+  if (global.__prisma) {
+    await global.__prisma.$disconnect();
+    global.__prisma = undefined;
+  }
+}
+
+export default getPrisma;

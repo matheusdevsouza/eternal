@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
-import { hashPassword, validatePassword, sanitizeEmail, validateEmail } from '@/lib/auth';
+import { 
+  hashPassword, 
+  validatePassword, 
+  sanitizeEmail, 
+  validateEmail,
+  generateSecureToken,
+  getExpiryDate,
+  SECURITY_CONFIG
+} from '@/lib/auth';
+import { sendVerificationEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -68,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await hashPassword(password);
 
-    // Cria usuário
+    // Cria usuário e token de verificação em transação (se possível) ou sequencialmente
 
     const user = await prisma.user.create({
       data: {
@@ -79,12 +88,44 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    try {
+
+      // Gerar token de verificação
+
+      const verificationToken = generateSecureToken();
+      const tokenExpiry = getExpiryDate(SECURITY_CONFIG.VERIFICATION_TOKEN_EXPIRY);
+
+      await prisma.verificationToken.create({
+        data: {
+          token: verificationToken,
+          userId: user.id,
+          expiresAt: tokenExpiry,
+        },
+      });
+
+      // Enviar email de verificação
+
+      if (process.env.EMAIL_HOST || process.env.SMTP_HOST) {
+         await sendVerificationEmail(user.email, user.name || 'User', verificationToken);
+      } else {
+         console.warn('[EMAIL] SMTP not configured (EMAIL_HOST/SMTP_HOST), skipping verification email.');
+      }
+
+    } catch (emailError) {
+      console.error('[SIGNUP_EMAIL_ERROR] Failed to send verification email:', emailError);
+
+      // Não falhar o cadastro, mas avisar no log.
+      // O usuário poderá pedir reenvio depois.
+      
+    }
+
     console.log('[SIGNUP_SUCCESS] Novo usuário criado:', user.email);
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Conta criada com sucesso! Você já pode fazer login.',
+        message: 'Conta criada com sucesso! Verifique seu email para ativar a conta.',
+        needsVerification: true,
         user: {
           id: user.id,
           email: user.email,
