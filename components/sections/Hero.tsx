@@ -34,7 +34,7 @@ export default function Hero() {
         style={{ zIndex: 0 }}
       />
       <motion.img 
-        src="/background/gift.png" 
+        src="/background/balloon.png" 
         alt=""
         aria-hidden="true"
         initial={{ opacity: 0, x: 50 }}

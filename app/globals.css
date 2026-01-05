@@ -85,12 +85,12 @@
 }
 
 :root[data-theme="light"] {
-  --bg-deep: #FFF8F9;
-  --bg-card: #FFFFFF;
+  --bg-deep: #FFF5F6;
+  --bg-card: #FFFBFC;
   --bg-card-hover: #FFF0F2;
-  --bg-section: #FFFFFF;
-  --bg-gradient-start: #FFFFFF;
-  --bg-gradient-end: #FFF8F9;
+  --bg-section: #FFFBFC;
+  --bg-gradient-start: #FFFBFC;
+  --bg-gradient-end: #FFF5F6;
   --primary: #E91E63;
   --primary-hover: #C2185B;
   --primary-light: rgba(233, 30, 99, 0.1);
@@ -102,7 +102,7 @@
   --text-light: rgba(26, 11, 14, 0.5);
   --border: #FADADD;
   --border-hover: rgba(233, 30, 99, 0.3);
-  --navbar-bg: rgba(255, 248, 249, 0.95);
+  --navbar-bg: rgba(255, 245, 246, 0.95);
   --logo-filter: invert(1) brightness(0.9);
   --badge-bg: #FFF0F2;
   --badge-text: #E91E63;

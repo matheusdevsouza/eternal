@@ -62,6 +62,11 @@ export enum AuditAction {
   PAYMENT_INITIATED = 'payment_initiated',
   PAYMENT_COMPLETED = 'payment_completed',
   PAYMENT_FAILED = 'payment_failed',
+  
+  // Account Actions
+  
+  ACCOUNT_DELETED = 'account_deleted',
+  NEW_DEVICE_LOGIN = 'new_device_login',
 }
 
 /**

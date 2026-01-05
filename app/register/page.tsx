@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -10,10 +10,75 @@ import { ToastContainer, toast } from '@/components/ui/Toast';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Icons } from '@/components/ui/Icons';
 
+interface PasswordRequirement {
+  label: string;
+  met: boolean;
+}
+
+function PasswordStrengthIndicator({ password }: { password: string }) {
+  const requirements = useMemo((): PasswordRequirement[] => [
+    { label: 'At least 8 characters', met: password.length >= 8 },
+    { label: 'One lowercase letter (a-z)', met: /[a-z]/.test(password) },
+    { label: 'One uppercase letter (A-Z)', met: /[A-Z]/.test(password) },
+    { label: 'One number (0-9)', met: /\d/.test(password) },
+    { label: 'One special character (@$!%*?&)', met: /[@$!%*?&]/.test(password) },
+  ], [password]);
+
+  const metCount = requirements.filter(r => r.met).length;
+  const strength = metCount === 0 ? 0 : metCount <= 2 ? 1 : metCount <= 4 ? 2 : 3;
+  const strengthLabels = ['', 'Weak', 'Medium', 'Strong'];
+  const strengthColors = ['', 'var(--error-icon)', 'var(--warning-icon)', 'var(--success-icon)'];
+
+  if (!password) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      className="mt-3 p-4 rounded-xl bg-[var(--bg-deep)] border border-[var(--border)]"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex-1 flex gap-1">
+          {[1, 2, 3].map((level) => (
+            <div
+              key={level}
+              className="h-1.5 flex-1 rounded-full transition-colors duration-300"
+              style={{
+                backgroundColor: strength >= level ? strengthColors[strength] : 'var(--border)'
+              }}
+            />
+          ))}
+        </div>
+        <span
+          className="text-xs font-semibold"
+          style={{ color: strengthColors[strength] || 'var(--text-muted)' }}
+        >
+          {strengthLabels[strength]}
+        </span>
+      </div>
+      
+      <ul className="space-y-1.5">
+        {requirements.map((req, idx) => (
+          <li key={idx} className="flex items-center gap-2 text-xs">
+            {req.met ? (
+              <Icons.Check className="w-3.5 h-3.5 text-[var(--success-icon)]" />
+            ) : (
+              <div className="w-3.5 h-3.5 rounded-full border border-[var(--border)]" />
+            )}
+            <span style={{ color: req.met ? 'var(--success-text)' : 'var(--text-muted)' }}>
+              {req.label}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+
 export default function RegistroPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,11 +97,21 @@ export default function RegistroPage() {
     });
   };
 
+  const isPasswordStrong = useMemo(() => {
+    const p = formData.password;
+    return p.length >= 8 && /[a-z]/.test(p) && /[A-Z]/.test(p) && /\d/.test(p) && /[@$!%*?&]/.test(p);
+  }, [formData.password]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
+      return;
+    }
+
+    if (!isPasswordStrong) {
+      toast.error('Password does not meet the requirements');
       return;
     }
     
@@ -54,8 +129,8 @@ export default function RegistroPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
         }),
       });
@@ -215,9 +290,8 @@ export default function RegistroPage() {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    minLength={8}
                     className="w-full pl-12 pr-12 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10 transition-all text-[var(--text)] placeholder-[var(--text-light)] shadow-inner"
-                    placeholder="Min 8 chars"
+                    placeholder="Create a strong password"
                   />
                   <button
                     type="button"
@@ -231,6 +305,7 @@ export default function RegistroPage() {
                     )}
                   </button>
                 </div>
+                <PasswordStrengthIndicator password={formData.password} />
               </div>
 
               <div className="space-y-1.5">
@@ -263,6 +338,9 @@ export default function RegistroPage() {
                     )}
                   </button>
                 </div>
+                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                  <p className="text-xs text-[var(--error-text)] ml-1 mt-1">Passwords do not match</p>
+                )}
               </div>
 
               <div className="flex items-start gap-3 pt-2">
@@ -286,7 +364,7 @@ export default function RegistroPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !isPasswordStrong}
                 className="w-full mt-4 py-4 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] hover:opacity-90 text-white font-bold rounded-xl transition-all shadow-[0_4px_20px_rgba(255,51,102,0.25)] hover:shadow-[0_4px_25px_rgba(255,51,102,0.35)] hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating account...' : 'Create Account'}

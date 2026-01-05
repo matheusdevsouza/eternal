@@ -13,6 +13,12 @@ interface Session {
   current: boolean;
 }
 
+/**
+ * Página de Configurações do Dashboard
+ * 
+ * Permite ao usuário gerenciar perfil, segurança e notificações.
+ */
+
 export default function SettingsPage() {
   const { user, refreshUser } = useUser();
   const { theme, toggleTheme } = useTheme();
@@ -39,13 +45,16 @@ export default function SettingsPage() {
     marketingEmails: false,
   });
 
-  // Update profile data when user changes
+  // Atualizar dados de perfil quando o usuário mudar
   useEffect(() => {
     if (user?.name) {
       setProfileData({ name: user.name });
     }
   }, [user]);
 
+  /**
+   * Salva as alterações do perfil do usuário.
+   */
   const handleProfileSave = async () => {
     setSaving(true);
     setError('');
@@ -74,6 +83,9 @@ export default function SettingsPage() {
     }
   };
 
+  /**
+   * Altera a senha do usuário.
+   */
   const handlePasswordChange = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError('Passwords do not match');
@@ -517,7 +529,7 @@ export default function SettingsPage() {
                 </button>
                 <button
                   onClick={() => {
-                    // TODO: Implement account deletion
+                    // TODO: Implementar exclusão de conta
                     setShowDeleteModal(false);
                     setError('Account deletion is not yet implemented');
                   }}

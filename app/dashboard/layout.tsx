@@ -8,6 +8,12 @@ import { UserProvider, useUser } from '@/contexts/UserContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Icons } from '@/components/ui/Icons';
 
+/**
+ * Sidebar do Dashboard
+ * 
+ * Componente lateral de navegação com menu responsivo e status do usuário.
+ */
+
 function DashboardSidebar() {
   const pathname = usePathname();
   const { user, logout } = useUser();
@@ -119,6 +125,12 @@ function DashboardSidebar() {
   );
 }
 
+/**
+ * Toggle de Tema
+ * 
+ * Botão para alternar entre modo claro e escuro.
+ */
+
 function ThemeToggle({ collapsed }: { collapsed: boolean }) {
   const { theme, toggleTheme } = useTheme();
   
@@ -141,6 +153,12 @@ function ThemeToggle({ collapsed }: { collapsed: boolean }) {
     </button>
   );
 }
+
+/**
+ * Banner de Assinatura Necessária
+ * 
+ * Exibido quando o usuário tenta acessar recursos pagos sem um plano ativo.
+ */
 
 function SubscriptionRequiredBanner() {
   return (
@@ -172,18 +190,26 @@ function SubscriptionRequiredBanner() {
   );
 }
 
+/**
+ * Conteúdo do Dashboard
+ * 
+ * Gerencia o estado de carregamento e verificações de acesso.
+ */
+
 function DashboardContent({ children }: { children: ReactNode }) {
   const { user, subscription, loading, hasActiveSubscription } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    // Not authenticated
+    // Não autenticado
+    
     if (!loading && !user) {
       router.push('/login?redirect=/dashboard');
       return;
     }
     
-    // Authenticated but no active subscription - redirect to pricing
+    // Autenticado mas sem assinatura ativa - redirecionar para preços
+    
     if (!loading && user && !hasActiveSubscription) {
       router.push('/pricing?upgrade=true');
       return;
@@ -205,7 +231,8 @@ function DashboardContent({ children }: { children: ReactNode }) {
 
   if (!user) return null;
 
-  // Fallback while redirect happens
+  // Fallback enquanto redirecionamento acontece
+  
   if (!hasActiveSubscription) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--bg-deep)]">
@@ -253,6 +280,12 @@ function DashboardContent({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
+/**
+ * Layout do Dashboard
+ * 
+ * Wrapper principal que fornece o contexto de usuário.
+ */
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (

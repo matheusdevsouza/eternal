@@ -63,7 +63,7 @@ Thumbs.db
 /tmp
 
 # db
-/database
+database/
 *.sql
 
 # scripts

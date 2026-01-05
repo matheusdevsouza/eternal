@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/sections/Hero';
-import Stats from '@/components/sections/Stats';
 import HowItWorks from '@/components/sections/HowItWorks';
 import Features from '@/components/sections/Features';
 import DemoSection from '@/components/demo/DemoSection';
@@ -18,42 +17,10 @@ export default function Home() {
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)] overflow-x-hidden transition-colors duration-300">
       <Navbar />
       <Hero />
-      <Stats />
       
 
-      <section id="funciona" className="relative py-32 px-6 overflow-hidden">
-        <motion.img 
-          src="/background/balloon.png" 
-          alt=""
-          aria-hidden="true"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 0.55, scale: 1 }}
-          viewport={{ once: true }}
-          animate={{ y: [0, -10, 0], rotate: [12, 15, 12] }}
-          transition={{ 
-            opacity: { duration: 0.6 },
-            y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-            rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-          }}
-          className="absolute right-8 md:right-16 lg:right-24 top-32 w-56 md:w-72 lg:w-80 pointer-events-none select-none hidden md:block"
-        />
-        <motion.img 
-          src="/background/balloon.png" 
-          alt=""
-          aria-hidden="true"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 0.40, scale: 1 }}
-          viewport={{ once: true }}
-          animate={{ y: [0, 8, 0], rotate: [-6, -9, -6] }}
-          transition={{ 
-            opacity: { duration: 0.6, delay: 0.3 },
-            y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
-            rotate: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
-          }}
-          className="absolute left-8 md:left-16 lg:left-20 bottom-24 w-36 md:w-44 lg:w-52 pointer-events-none select-none hidden lg:block"
-        />
-        
-        <div className="max-w-7xl mx-auto relative z-10">
+      <section id="funciona" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -100,7 +67,7 @@ export default function Home() {
 
       <section id="precos" className="relative py-32 px-6 bg-gradient-to-b from-transparent to-[var(--bg-section)]/50 overflow-hidden">
         <motion.img 
-          src="/background/hearts.png" 
+          src="/background/heart.png" 
           alt=""
           aria-hidden="true"
           initial={{ opacity: 0, x: -30 }}
@@ -115,7 +82,7 @@ export default function Home() {
           className="absolute left-8 md:left-16 lg:left-24 top-40 w-52 md:w-64 lg:w-72 pointer-events-none select-none hidden lg:block"
         />
         <motion.img 
-          src="/background/hearts.png" 
+          src="/background/heart.png" 
           alt=""
           aria-hidden="true"
           initial={{ opacity: 0, x: 30 }}
@@ -130,7 +97,7 @@ export default function Home() {
           className="absolute right-12 md:right-20 lg:right-28 bottom-32 w-40 md:w-52 pointer-events-none select-none hidden xl:block"
         />
         <motion.img 
-          src="/background/hearts.png" 
+          src="/background/heart.png" 
           alt=""
           aria-hidden="true"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -166,8 +133,23 @@ export default function Home() {
       </section>
 
 
-      <section className="py-32 px-6 bg-gradient-to-b from-[var(--bg-deep)] to-[var(--bg-section)]/30">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative py-32 px-6 bg-gradient-to-b from-[var(--bg-deep)] to-[var(--bg-section)]/30 overflow-hidden">
+        <motion.img 
+          src="/background/heart-balloon.png" 
+          alt=""
+          aria-hidden="true"
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 0.40, x: 0 }}
+          viewport={{ once: true }}
+          animate={{ y: [0, -12, 0], rotate: [8, 12, 8] }}
+          transition={{ 
+            opacity: { duration: 0.6 },
+            y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+            rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+          }}
+          className="absolute right-8 md:right-16 lg:right-24 top-40 w-44 md:w-52 lg:w-60 pointer-events-none select-none hidden lg:block"
+        />
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

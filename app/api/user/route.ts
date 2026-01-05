@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
 import { authMiddleware } from '@/lib/middleware';
+import { getEffectivePlan } from '@/lib/subscription-service';
+import { PLAN_CONFIG } from '@/lib/plan-config';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * @api {get} /api/user Get Current User
- * @description Returns the authenticated user's profile and subscription info
+ * @api {get} /api/user Obter Usuário Atual
+ * @description Retorna o perfil e informações de assinatura do usuário autenticado
+ * 
+ * CRÍTICO: Usa getEffectivePlan() como a ÚNICA FONTE DE VERDADE para o status do plano.
+ * O plano efetivo retornado é validado no servidor e não pode ser manipulado pelo cliente.
  */
 export async function GET(request: NextRequest) {
   try {
@@ -22,6 +27,7 @@ export async function GET(request: NextRequest) {
 
     const prisma = getPrisma();
     
+    // Buscar informações básicas do usuário
     const user = await prisma.user.findUnique({
       where: { id: auth.userId },
       select: {
@@ -57,11 +63,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // CRÍTICO: Obter plano efetivo validado pelo servidor
+    // Esta é a ÚNICA FONTE DE VERDADE para exibição do plano
+    const effective = await getEffectivePlan(auth.userId);
+
     return NextResponse.json({
       success: true,
       user: {
         ...user,
         totalGifts: user._count.gifts,
+        // Dados do plano validados pelo servidor - não podem ser manipulados pelo cliente
+        effectivePlan: {
+          plan: effective.plan,
+          displayName: effective.plan ? PLAN_CONFIG[effective.plan].displayName : null,
+          isActive: effective.isActive,
+          reason: effective.reason,
+          expiresAt: effective.expiresAt,
+        }
       },
     });
   } catch (error) {
@@ -74,8 +92,8 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * @api {put} /api/user Update User Profile
- * @description Updates the authenticated user's profile
+ * @api {put} /api/user Atualizar Perfil do Usuário
+ * @description Atualiza o perfil do usuário autenticado
  */
 export async function PUT(request: NextRequest) {
   try {

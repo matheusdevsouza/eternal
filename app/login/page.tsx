@@ -36,8 +36,6 @@ export default function LoginPage() {
       const data = await response.json();
       
       if (response.ok) {
-        // Redireciona baseado no status da assinatura
-        // Dashboard se assinatura ativa, Pricing se não
         const redirectUrl = data.redirectUrl || '/pricing';
         window.location.href = redirectUrl;
       } else {
@@ -65,12 +63,12 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(data.message || 'Email de verificação reenviado! Verifique sua caixa de entrada.');
+        toast.success(data.message || 'Verification email sent! Check your inbox.');
       } else {
-        toast.error(data.error || 'Falha ao reenviar email.');
+        toast.error(data.error || 'Failed to resend email.');
       }
     } catch (err) {
-      toast.error('Erro ao conectar com o servidor.');
+      toast.error('Error connecting to server.');
     } finally {
       setResendLoading(false);
     }
@@ -211,8 +209,36 @@ export default function LoginPage() {
               </div>
             </form>
 
-            <div className="mt-8 text-center space-y-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="mt-8 space-y-4">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[var(--border)]"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-[var(--bg-card)] text-[var(--text-muted)]">Or continue with</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl hover:border-[var(--primary)] hover:bg-[var(--bg-card-hover)] transition-all font-medium text-[var(--text)]"
+                  onClick={() => toast.info('Google login coming soon!')}
+                >
+                  <Icons.Google className="w-5 h-5" />
+                  Google
+                </button>
+                <button
+                  type="button"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-[var(--bg-deep)] border border-[var(--border)] rounded-xl hover:border-[var(--primary)] hover:bg-[var(--bg-card-hover)] transition-all font-medium text-[var(--text)]"
+                  onClick={() => toast.info('Apple login coming soon!')}
+                >
+                  <Icons.Apple className="w-5 h-5" />
+                  Apple
+                </button>
+              </div>
+
+              <p className="text-sm text-[var(--text-secondary)] text-center">
                 Don't have an account?{' '}
                 <Link href="/register" className="text-[var(--primary)] hover:text-[var(--primary-hover)] font-bold transition-colors">
                   Create free account

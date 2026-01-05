@@ -2,17 +2,16 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Icons } from '../ui/Icons';
 
 interface StepCardProps {
   number: string;
-  icon: React.ReactElement<{ className?: string }>;
+  image: string;
   title: string;
   desc: string;
   index: number;
 }
 
-function StepCard({ number, icon, title, desc, index }: StepCardProps) {
+function StepCard({ number, image, title, desc, index }: StepCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -24,8 +23,12 @@ function StepCard({ number, icon, title, desc, index }: StepCardProps) {
       <div className="text-5xl font-black text-[var(--card-number)] absolute top-6 right-8 group-hover:text-[var(--primary-light)] transition-colors">
         {number}
       </div>
-      <div className="w-14 h-14 rounded-2xl bg-[var(--icon-bg)] flex items-center justify-center text-[var(--primary)] mb-8">
-        {React.cloneElement(icon, { className: "w-7 h-7" })}
+      <div className="w-20 h-20 mb-6 transition-transform duration-300 ease-out group-hover:scale-110 group-hover:rotate-6">
+        <img 
+          src={image} 
+          alt="" 
+          className="w-full h-full object-contain drop-shadow-lg"
+        />
       </div>
       <h3 className="text-xl font-bold mb-4 text-[var(--text)]">{title}</h3>
       <p className="text-[var(--text-secondary)] leading-relaxed">{desc}</p>
@@ -37,19 +40,19 @@ export default function HowItWorks() {
   const steps = [
     {
       number: '01',
-      icon: <Icons.Camera />,
+      image: '/background/camera.png',
       title: 'Choose your memories',
       desc: 'Upload the couple\'s most striking photos.',
     },
     {
       number: '02',
-      icon: <Icons.Music />,
+      image: '/background/song.png',
       title: 'Set the rhythm',
       desc: 'Choose the song that is your theme.',
     },
     {
       number: '03',
-      icon: <Icons.Gift />,
+      image: '/background/gift.png',
       title: 'Surprise',
       desc: 'Generate the link or QR Code and send it to the one you love.',
     },
@@ -63,5 +66,3 @@ export default function HowItWorks() {
         </div>
   );
 }
-
-

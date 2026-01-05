@@ -7,6 +7,12 @@ import Footer from '@/components/layout/Footer';
 import { Icons } from '@/components/ui/Icons';
 import { ToastContainer, toast } from '@/components/ui/Toast';
 
+/**
+ * Página de Contato
+ * 
+ * Formulário de contato público com animações e validação básica.
+ */
+
 export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,9 +25,8 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulando api call (!)
-    
+
+    // Simulação de chamada de API
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     toast.success('Message sent successfully! We will get back to you soon.');

@@ -80,8 +80,39 @@ export default function DemoSection() {
   }, []);
 
   return (
-    <section id="demo" className="py-20 px-6 bg-[var(--bg-deep)] transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
+    <section id="demo" className="relative py-20 px-6 bg-[var(--bg-deep)] transition-colors duration-300 overflow-hidden">
+      <motion.img 
+        src="/background/star.png" 
+        alt=""
+        aria-hidden="true"
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.45, scale: 1 }}
+        viewport={{ once: true }}
+        animate={{ y: [0, -10, 0], rotate: [12, 18, 12] }}
+        transition={{ 
+          opacity: { duration: 0.6 },
+          y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+        }}
+        className="absolute left-8 md:left-16 lg:left-24 top-32 w-36 md:w-44 lg:w-52 pointer-events-none select-none hidden lg:block"
+      />
+      <motion.img 
+        src="/background/star.png" 
+        alt=""
+        aria-hidden="true"
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.35, scale: 1 }}
+        viewport={{ once: true }}
+        animate={{ y: [0, 8, 0], rotate: [-8, -12, -8] }}
+        transition={{ 
+          opacity: { duration: 0.6, delay: 0.3 },
+          y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
+          rotate: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
+        }}
+        className="absolute right-12 md:right-20 lg:right-28 bottom-40 w-32 md:w-40 pointer-events-none select-none hidden xl:block"
+      />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

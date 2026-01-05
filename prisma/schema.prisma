@@ -160,6 +160,7 @@ model Gift {
   slug          String    @unique
   title         String
   message       String    @db.Text
+  content       Json?     // Block-based content for the new builder
   recipientName String?
   theme         String    @default("elegance")
   font          String    @default("serif-luxe")

@@ -16,7 +16,7 @@ interface NavItem {
 }
 
 export default function Navbar() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, effectivePlan } = useAuth();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -179,6 +179,25 @@ export default function Navbar() {
                         <p className="font-bold text-sm text-[var(--text)] truncate">{user.name || 'User'}</p>
                         <p className="text-xs text-[var(--text-secondary)] truncate">{user.email}</p>
                       </div>
+
+                      {effectivePlan?.isActive ? (
+                        <div className="mx-2 mb-2 px-3 py-2 bg-[var(--primary-light)] rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Icons.Crown className="w-4 h-4 text-[var(--primary)]" />
+                            <span className="text-xs font-bold text-[var(--primary)]">
+                              Plan: {effectivePlan.displayName}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <Link
+                          href="/pricing"
+                          className="mx-2 mb-2 flex items-center gap-2 px-3 py-2 bg-[var(--warning-bg)] rounded-lg text-xs font-medium text-[var(--warning-text)] hover:opacity-90 transition-opacity"
+                        >
+                          <Icons.Sparkles className="w-4 h-4" />
+                          No active plan - Upgrade
+                        </Link>
+                      )}
                       
                       <Link 
                         href="/dashboard" 
@@ -323,7 +342,7 @@ export default function Navbar() {
                  <div className="text-center py-4">Loading...</div>
               ) : user ? (
                 <>
-                  <div className="flex items-center gap-3 px-4 py-2 mb-4 bg-[var(--bg-card)] rounded-xl border border-[var(--border)]">
+                  <div className="flex items-center gap-3 px-4 py-2 mb-2 bg-[var(--bg-card)] rounded-xl border border-[var(--border)]">
                     <div className="w-10 h-10 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-bold">
                        {getUserInitials()}
                     </div>
@@ -332,6 +351,26 @@ export default function Navbar() {
                        <div className="text-xs text-[var(--text-secondary)] truncate">{user.email}</div>
                     </div>
                   </div>
+
+                  {effectivePlan?.isActive ? (
+                    <div className="mb-4 px-4 py-3 bg-[var(--primary-light)] rounded-xl">
+                      <div className="flex items-center gap-2">
+                        <Icons.Crown className="w-5 h-5 text-[var(--primary)]" />
+                        <span className="text-sm font-bold text-[var(--primary)]">
+                          Plan: {effectivePlan.displayName}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      href="/pricing"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="mb-4 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--warning-bg)] rounded-xl text-sm font-bold text-[var(--warning-text)]"
+                    >
+                      <Icons.Sparkles className="w-5 h-5" />
+                      No active plan - Upgrade
+                    </Link>
+                  )}
                   
                   <Link
                     href="/dashboard"

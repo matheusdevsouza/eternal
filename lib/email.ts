@@ -60,21 +60,24 @@ function getEmailTemplate(content: string, options: EmailTemplateOptions = {}): 
   <!-- Main Container -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width:600px;margin:0 auto;">
     
-    <!-- Header with Logo -->
+    <!-- Spacer -->
     <tr>
-      <td style="padding:40px 20px 30px;text-align:center;">
-        <a href="${SITE_URL}" target="_blank" style="display:inline-block;">
-          <img src="${LOGO_URL}" alt="Eternal Gift" width="180" style="max-width:180px;height:auto;border:0;display:block;margin:0 auto;" />
-        </a>
-      </td>
+      <td style="padding:30px 20px 0;"></td>
     </tr>
     
-    <!-- Content Card -->
+    <!-- Content Card with Logo Inside -->
     <tr>
       <td style="padding:0 20px;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#F7F7F8;border-radius:16px;">
           <tr>
-            <td style="padding:40px 32px;">
+            <td style="padding:32px 32px 0;text-align:center;">
+              <a href="${SITE_URL}" target="_blank" style="display:inline-block;">
+                <img src="https://eternallove.vercel.app/logo-b.png" alt="Eternal Gift" width="120" style="max-width:120px;height:auto;border:0;display:block;margin:0 auto;" />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px 32px 40px;">
               ${content}
             </td>
           </tr>
@@ -168,7 +171,7 @@ export async function sendVerificationEmail(
   const verificationUrl = `${SITE_URL}/verify-email?token=${token}`;
   
   const content = `
-    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Verify Your Account</h1>
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Verify Your Account</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
     <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">Thank you for creating an account with Eternal Gift. Please verify your email address to activate your account.</p>
     ${button('Verify My Account', verificationUrl)}
@@ -197,7 +200,7 @@ export async function sendWelcomeEmail(
   name: string
 ): Promise<void> {
   const content = `
-    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Welcome to Eternal Gift</h1>
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Welcome to Eternal Gift</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
     <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">Your account has been verified and you're ready to start creating beautiful digital gifts for your loved ones.</p>
     <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">Choose a plan that works for you and begin your journey of creating memories that last forever.</p>
@@ -228,7 +231,7 @@ export async function sendPasswordResetEmail(
   const resetUrl = `${SITE_URL}/reset-password?token=${token}`;
   
   const content = `
-    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Reset Your Password</h1>
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Reset Your Password</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
     <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">We received a request to reset your password. Click the button below to create a new password.</p>
     ${button('Reset Password', resetUrl)}
@@ -257,7 +260,7 @@ export async function sendPasswordChangedEmail(
   name: string
 ): Promise<void> {
   const content = `
-    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Password Changed</h1>
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Password Changed</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
     <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">Your password has been changed successfully.</p>
     ${infoBox(`<p style="margin:0;font-size:14px;color:#065F46;">For your security, you have been logged out of all other devices.</p>`, 'success')}
@@ -514,3 +517,114 @@ export async function sendRefundEmail(
     html: getEmailTemplate(content, { preheader: `Refund of ${formattedAmount} processed` }),
   });
 }
+
+/**
+ * New Device Login Email
+ * Sent when user logs in from a new device/IP
+ */
+export async function sendNewDeviceLoginEmail(
+  to: string,
+  name: string,
+  deviceInfo: {
+    ip: string;
+    userAgent?: string;
+    location?: string;
+    timestamp: Date;
+  }
+): Promise<void> {
+  const formattedDate = deviceInfo.timestamp.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  const content = `
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">New Login Detected</h1>
+    <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
+    <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">We noticed a login to your Eternal Gift account from a new device or location.</p>
+    ${infoBox(`
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td style="padding:4px 0;font-size:14px;color:#4A4A4A;"><strong>Date:</strong></td><td style="padding:4px 0;font-size:14px;color:#1A1A1A;text-align:right;">${formattedDate}</td></tr>
+        <tr><td style="padding:4px 0;font-size:14px;color:#4A4A4A;"><strong>IP Address:</strong></td><td style="padding:4px 0;font-size:14px;color:#1A1A1A;text-align:right;">${deviceInfo.ip}</td></tr>
+        ${deviceInfo.location ? `<tr><td style="padding:4px 0;font-size:14px;color:#4A4A4A;"><strong>Location:</strong></td><td style="padding:4px 0;font-size:14px;color:#1A1A1A;text-align:right;">${deviceInfo.location}</td></tr>` : ''}
+      </table>
+    `, 'warning')}
+    <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">If this was you, you can ignore this email. If you don't recognize this activity, please secure your account immediately.</p>
+    ${button('Secure My Account', `${SITE_URL}/settings`)}
+    ${divider()}
+    ${smallText('If you did not initiate this login, change your password immediately and contact support.')}
+  `;
+
+  const transporter = createTransporter();
+  
+  await transporter.sendMail({
+    from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+    to,
+    subject: 'New Login to Your Account - Eternal Gift',
+    html: getEmailTemplate(content, { preheader: 'New login detected on your account' }),
+  });
+}
+
+/**
+ * Account Deletion Request Email
+ * Sent when user requests to delete their account (confirmation)
+ */
+export async function sendAccountDeletionRequestEmail(
+  to: string,
+  name: string,
+  confirmationToken: string
+): Promise<void> {
+  const confirmUrl = `${SITE_URL}/api/user/delete/confirm?token=${confirmationToken}`;
+  
+  const content = `
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Account Deletion Request</h1>
+    <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
+    <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">We received a request to permanently delete your Eternal Gift account.</p>
+    ${infoBox(`<p style="margin:0;font-size:14px;color:#92400E;"><strong>Warning:</strong> This action is irreversible. All your data, gifts, and settings will be permanently deleted.</p>`, 'warning')}
+    <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">If you want to proceed with deleting your account, click the button below:</p>
+    ${button('Confirm Deletion', confirmUrl)}
+    ${divider()}
+    ${smallText('This link expires in 1 hour. If you did not request this deletion, you can safely ignore this email.')}
+  `;
+
+  const transporter = createTransporter();
+  
+  await transporter.sendMail({
+    from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+    to,
+    subject: 'Confirm Account Deletion - Eternal Gift',
+    html: getEmailTemplate(content, { preheader: 'Confirm your account deletion request' }),
+  });
+}
+
+/**
+ * Account Deleted Email
+ * Sent after account is successfully deleted
+ */
+export async function sendAccountDeletedEmail(
+  to: string,
+  name: string
+): Promise<void> {
+  const content = `
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Account Deleted</h1>
+    <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
+    <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">Your Eternal Gift account has been permanently deleted as requested.</p>
+    ${infoBox(`<p style="margin:0;font-size:14px;color:#4A4A4A;">All your data, including gifts and settings, has been removed from our systems.</p>`, 'info')}
+    <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">We're sorry to see you go. If you ever want to create beautiful digital gifts again, you're always welcome back.</p>
+    ${button('Visit Eternal Gift', SITE_URL)}
+    ${divider()}
+    ${smallText('Thank you for being part of the Eternal Gift community.')}
+  `;
+
+  const transporter = createTransporter();
+  
+  await transporter.sendMail({
+    from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+    to,
+    subject: 'Your Account Has Been Deleted - Eternal Gift',
+    html: getEmailTemplate(content, { preheader: 'Your account has been permanently deleted' }),
+  });
+}
+

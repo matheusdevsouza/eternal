@@ -13,6 +13,7 @@ import {
   getUserAgent,
   SECURITY_CONFIG,
 } from '@/lib/auth';
+import { sendNewDeviceLoginEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -170,15 +171,32 @@ export async function POST(request: NextRequest) {
 
     // Reset de segurança após login bem-sucedido
 
+    const currentIP = getClientIP(request);
+    const isNewDevice = user.lastLoginIP && user.lastLoginIP !== currentIP;
+
     await prisma.user.update({
       where: { id: user.id },
       data: {
         loginAttempts: 0,
         lockedUntil: null,
         lastLoginAt: new Date(),
-        lastLoginIP: getClientIP(request),
+        lastLoginIP: currentIP,
       },
     });
+
+    // Envia email de alerta para login de novo dispositivo
+
+    if (isNewDevice) {
+      sendNewDeviceLoginEmail(
+        user.email,
+        user.name || 'User',
+        {
+          ip: currentIP || 'Unknown',
+          userAgent: getUserAgent(request) || undefined,
+          timestamp: new Date(),
+        }
+      ).catch(err => console.error('[NEW_DEVICE_EMAIL_ERROR]', err));
+    }
 
     // Gera JWT
 

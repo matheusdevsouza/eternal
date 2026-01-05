@@ -147,6 +147,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (body.textColor !== undefined) {
       updateData.textColor = body.textColor;
     }
+    if (body.content !== undefined) {
+      updateData.content = body.content;
+    }
 
     // Atualizar presente
 
