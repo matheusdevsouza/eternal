@@ -181,7 +181,6 @@ export default function SettingsPage() {
       
       <main className="pt-28 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
-          {/* Cabeçalho */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -192,7 +191,6 @@ export default function SettingsPage() {
           </motion.div>
 
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Barra Lateral */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -217,7 +215,6 @@ export default function SettingsPage() {
               </div>
             </motion.div>
 
-            {/* Conteúdo */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -225,7 +222,6 @@ export default function SettingsPage() {
               className="flex-1"
             >
               <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-6 lg:p-8">
-                {/* Mensagens de Erro/Sucesso */}
                 <AnimatePresence>
                   {error && (
                     <motion.div
@@ -249,7 +245,6 @@ export default function SettingsPage() {
                   )}
                 </AnimatePresence>
 
-                {/* Aba da Conta */}
                 {activeTab === 'account' && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-bold mb-4">Account Information</h2>
@@ -297,7 +292,6 @@ export default function SettingsPage() {
                   </div>
                 )}
 
-                {/* Aba de Segurança */}
                 {activeTab === 'security' && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-bold mb-4">Change Password</h2>
@@ -348,7 +342,6 @@ export default function SettingsPage() {
                   </div>
                 )}
 
-                {/* Aba de Assinatura */}
                 {activeTab === 'subscription' && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-bold mb-4">Subscription</h2>
@@ -393,7 +386,6 @@ export default function SettingsPage() {
                   </div>
                 )}
 
-                  {/* Zona de Perigo */}
                 {activeTab === 'danger' && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-bold text-red-500 mb-4">Danger Zone</h2>
@@ -420,7 +412,6 @@ export default function SettingsPage() {
 
       <Footer />
 
-      {/* Modal de Exclusão de Conta */}
       <AnimatePresence>
         {showDeleteModal && (
           <motion.div

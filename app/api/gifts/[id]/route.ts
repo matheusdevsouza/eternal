@@ -133,13 +133,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         : null;
     }
     if (body.theme !== undefined) {
-      updateData.theme = body.theme;
+      const ALLOWED_THEMES = ['elegance', 'romantic', 'vintage', 'modern', 'nature', 'dark'];
+      updateData.theme = ALLOWED_THEMES.includes(body.theme) ? body.theme : 'elegance';
     }
     if (body.font !== undefined) {
-      updateData.font = body.font;
+      const ALLOWED_FONTS = ['serif-luxe', 'sans-clean', 'handwriting', 'monospace'];
+      updateData.font = ALLOWED_FONTS.includes(body.font) ? body.font : 'serif-luxe';
     }
     if (body.animation !== undefined) {
-      updateData.animation = body.animation;
+      const ALLOWED_ANIMATIONS = ['fade-in', 'slide-up', 'zoom', 'rotate', 'bounce'];
+      updateData.animation = ALLOWED_ANIMATIONS.includes(body.animation) ? body.animation : 'fade-in';
     }
     if (body.backgroundColor !== undefined) {
       updateData.backgroundColor = body.backgroundColor;
