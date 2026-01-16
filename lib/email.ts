@@ -17,6 +17,7 @@ const SMTP_CONFIG = {
 const FROM_EMAIL = process.env.EMAIL_FROM || process.env.FROM_EMAIL;
 const FROM_NAME = process.env.FROM_NAME || 'Eternal Gift';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://eternallove.vercel.app';
+const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001';
 const LOGO_URL = `${SITE_URL}/logo.png`;
 
 // =============================================================================
@@ -39,7 +40,7 @@ interface EmailTemplateOptions {
 function getEmailTemplate(content: string, options: EmailTemplateOptions = {}): string {
   const year = new Date().getFullYear();
   const preheader = options.preheader ? `<span style="display:none;font-size:1px;color:#fff;max-height:0;overflow:hidden;">${options.preheader}</span>` : '';
-  
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -135,7 +136,7 @@ function infoBox(content: string, variant: 'success' | 'warning' | 'info' = 'inf
     info: { bg: '#EFF6FF', border: '#3B82F6' },
   };
   const { bg, border } = colors[variant];
-  
+
   return `
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:24px 0;">
       <tr>
@@ -169,7 +170,7 @@ export async function sendVerificationEmail(
   token: string
 ): Promise<void> {
   const verificationUrl = `${SITE_URL}/verify-email?token=${token}`;
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Verify Your Account</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -182,7 +183,7 @@ export async function sendVerificationEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -210,7 +211,7 @@ export async function sendWelcomeEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -229,7 +230,7 @@ export async function sendPasswordResetEmail(
   token: string
 ): Promise<void> {
   const resetUrl = `${SITE_URL}/reset-password?token=${token}`;
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Reset Your Password</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -242,7 +243,7 @@ export async function sendPasswordResetEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -269,7 +270,7 @@ export async function sendPasswordChangedEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -293,11 +294,11 @@ export async function sendSecurityAlertEmail(
     <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">We detected unusual activity on your account:</p>
     ${infoBox(`<p style="margin:0;font-size:14px;color:#92400E;">${details}</p>`, 'warning')}
     <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">If this was you, you can ignore this message. Otherwise, we recommend changing your password immediately.</p>
-    ${button('Review Security Settings', `${SITE_URL}/dashboard/settings`)}
+    ${button('Review Security Settings', `${DASHBOARD_URL}/settings`)}
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -316,11 +317,11 @@ export async function sendPaymentConfirmationEmail(
   plan: string,
   amount: number
 ): Promise<void> {
-  const formattedAmount = new Intl.NumberFormat('en-US', { 
-    style: 'currency', 
-    currency: 'USD' 
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
   }).format(amount / 100);
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Payment Confirmed</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -333,11 +334,11 @@ export async function sendPaymentConfirmationEmail(
       </table>
     `, 'success')}
     <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">Your subscription is now active. You can start creating beautiful digital gifts right away.</p>
-    ${button('Go to Dashboard', `${SITE_URL}/dashboard`)}
+    ${button('Go to Dashboard', `${DASHBOARD_URL}`)}
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -355,12 +356,12 @@ export async function sendSubscriptionCancelledEmail(
   name: string,
   endDate: Date
 ): Promise<void> {
-  const formattedDate = endDate.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  const formattedDate = endDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Subscription Cancelled</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -372,7 +373,7 @@ export async function sendSubscriptionCancelledEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -404,7 +405,7 @@ export async function sendGiftPublishedEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -423,24 +424,24 @@ export async function sendSubscriptionExpiringEmail(
   daysRemaining: number,
   endDate: Date
 ): Promise<void> {
-  const formattedDate = endDate.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  const formattedDate = endDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Your Subscription Expires Soon</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
     <p style="margin:0;font-size:16px;color:#4A4A4A;line-height:1.6;">Your Eternal Gift subscription will expire in <strong>${daysRemaining} days</strong> (${formattedDate}).</p>
     <p style="margin:16px 0 0;font-size:16px;color:#4A4A4A;line-height:1.6;">To continue enjoying all your plan features and keep your gifts accessible, please renew your subscription.</p>
-    ${button('Renew Subscription', `${SITE_URL}/dashboard/subscription`)}
+    ${button('Renew Subscription', `${DASHBOARD_URL}/subscription`)}
     ${divider()}
     ${smallText('If your subscription is set to auto-renew, you can ignore this message.')}
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -467,7 +468,7 @@ export async function sendSubscriptionExpiredEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -486,11 +487,11 @@ export async function sendRefundEmail(
   amount: number,
   reason?: string
 ): Promise<void> {
-  const formattedAmount = new Intl.NumberFormat('en-US', { 
-    style: 'currency', 
-    currency: 'USD' 
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
   }).format(amount / 100);
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;">Refund Processed</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -509,7 +510,7 @@ export async function sendRefundEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -532,14 +533,14 @@ export async function sendNewDeviceLoginEmail(
     timestamp: Date;
   }
 ): Promise<void> {
-  const formattedDate = deviceInfo.timestamp.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
+  const formattedDate = deviceInfo.timestamp.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
   });
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">New Login Detected</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -558,7 +559,7 @@ export async function sendNewDeviceLoginEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -577,7 +578,7 @@ export async function sendAccountDeletionRequestEmail(
   confirmationToken: string
 ): Promise<void> {
   const confirmUrl = `${SITE_URL}/api/user/delete/confirm?token=${confirmationToken}`;
-  
+
   const content = `
     <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;">Account Deletion Request</h1>
     <p style="margin:0 0 8px;font-size:16px;color:#4A4A4A;line-height:1.6;">Hello ${name},</p>
@@ -590,7 +591,7 @@ export async function sendAccountDeletionRequestEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,
@@ -619,7 +620,7 @@ export async function sendAccountDeletedEmail(
   `;
 
   const transporter = createTransporter();
-  
+
   await transporter.sendMail({
     from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
     to,

@@ -9,7 +9,7 @@ export default function CheckoutSuccessPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-deep)] text-[var(--text)]">
       <Navbar />
-      
+
       <div className="pt-32 pb-20 px-6 min-h-screen flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -24,7 +24,7 @@ export default function CheckoutSuccessPage() {
           </div>
 
           <h1 className="text-3xl font-bold mb-4">Pagamento Confirmado! 🎉</h1>
-          
+
           <p className="text-[var(--text-secondary)] mb-8">
             Sua assinatura foi ativada com sucesso. Agora você tem acesso a todos os recursos do seu plano.
           </p>
@@ -49,13 +49,13 @@ export default function CheckoutSuccessPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/dashboard"
+              href={`${process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001'}`}
               className="px-8 py-4 bg-[var(--primary)] text-white font-bold rounded-xl hover:opacity-90 transition-all"
             >
               Ir para o Painel
             </Link>
             <Link
-              href="/dashboard/gifts/new"
+              href={`${process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001'}/gifts/new`}
               className="px-8 py-4 bg-[var(--bg-card)] border border-[var(--border)] font-bold rounded-xl hover:bg-[var(--bg-card-hover)] transition-all"
             >
               Criar Presente

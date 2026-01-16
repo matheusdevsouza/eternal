@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
 
     if (shouldLockAccount(user.loginAttempts, user.lockedUntil)) {
       const minutesRemaining = getLockoutTimeRemaining(user.lockedUntil);
-      
+
       if (minutesRemaining > 0) {
         return NextResponse.json(
           {
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
           { status: 423 }
         );
       }
-      
+
       // Auto-desbloqueio se o tempo passou
 
       await prisma.user.update({
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
 
       if (shouldLock) {
         console.log('[SECURITY] Conta bloqueada:', user.email);
-        
+
         return NextResponse.json(
           {
             error: 'Múltiplas tentativas de login falhas. Conta bloqueada por 15 minutos.',
@@ -156,8 +156,8 @@ export async function POST(request: NextRequest) {
 
     const sessionToken = generateSecureToken();
     const sessionDuration = rememberMe
-      ? SECURITY_CONFIG.SESSION_DURATION * 4 
-      : SECURITY_CONFIG.SESSION_DURATION; 
+      ? SECURITY_CONFIG.SESSION_DURATION * 4
+      : SECURITY_CONFIG.SESSION_DURATION;
 
     const session = await prisma.session.create({
       data: {
@@ -212,14 +212,16 @@ export async function POST(request: NextRequest) {
     // Determina se usuário tem assinatura ativa
     const subscription = user.subscription;
     const now = new Date();
-    
-    const hasActiveSubscription = !!(subscription 
+
+    const hasActiveSubscription = !!(subscription
       && subscription.status === 'ACTIVE'
       && (!subscription.endDate || subscription.endDate > now)
     );
 
     // Determina URL de redirecionamento baseado no status da assinatura
-    const redirectUrl = hasActiveSubscription ? '/dashboard' : '/pricing';
+    const redirectUrl = hasActiveSubscription
+      ? (process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001')
+      : '/pricing';
 
     // Resposta
 
@@ -247,7 +249,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Cookie seguro
-    
+
     response.cookies.set('session', jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
